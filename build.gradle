@@ -1,0 +1,129 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.9.25'
+    id 'org.jetbrains.kotlin.plugin.spring' version '1.9.25'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.25'
+    id 'org.jetbrains.kotlin.kapt' version '1.9.25'
+}
+
+group = 'com.dohyundev'
+version = '0.0.1-SNAPSHOT'
+description = 'pos'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    // Spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+
+    // Kotlin
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+
+    // DB & JDBC
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Dev tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+
+    // Logging & Debug
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // TSID
+    implementation 'com.github.f4b6a3:tsid-creator:5.2.6'
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.2'
+
+    // QueryDSL
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:6.11'
+    kapt 'io.github.openfeign.querydsl:querydsl-apt:6.11:jpa'
+
+    // holiday
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev20250404-2.0.0'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs = ['-Xjsr305=strict']
+    }
+}
+
+allOpen {
+    annotation 'jakarta.persistence.Entity'
+    annotation 'jakarta.persistence.MappedSuperclass'
+    annotation 'jakarta.persistence.Embeddable'
+}
+
+kapt {
+    correctErrorTypes = true
+    arguments {
+        arg("querydsl.useFields", "true")
+    }
+}
+
+// Frontend React Build 설정
+def frontendDir = "$projectDir/frontend"
+
+tasks.register('installReact', Exec) {
+    workingDir = file(frontendDir)
+    inputs.dir frontendDir
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'npm.cmd', 'install'
+    } else {
+        commandLine 'npm', 'install'
+    }
+}
+
+tasks.register('buildReact', Exec) {
+    dependsOn 'installReact'
+    workingDir = file(frontendDir)
+    inputs.dir frontendDir
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'npm.cmd', 'run', 'build'
+    } else {
+        commandLine 'npm', 'run', 'build'
+    }
+}
+
+tasks.register('copyReactBuildFiles', Copy) {
+    dependsOn 'buildReact'
+    from "$frontendDir/dist"
+    into "$projectDir/src/main/resources/static"
+}
+
+tasks.named('processResources') {
+    dependsOn 'copyReactBuildFiles'
+}
+
+tasks.named('bootJar') {
+    dependsOn 'copyReactBuildFiles'
+}
+
+tasks.named('buildReact') {
+    onlyIf { gradle.startParameter.taskNames.contains('bootJar') }
+}
