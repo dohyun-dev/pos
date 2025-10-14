@@ -16,7 +16,7 @@ class Product(
 
     /** 단위 (예: EA, BOX, SET 등) */
     @Column(length = 20)
-    val uom: String? = null,
+    var uom: String? = null,
 
     /** 제품명 */
     @Column(nullable = false)
@@ -24,11 +24,11 @@ class Product(
 
     /** 설명 */
     @Column(length = 500)
-    val description: String? = null,
+    var description: String? = null,
 
     /** 기본 판매가 */
     @Column(precision = 15, scale = 2)
-    val basePrice: BigDecimal = BigDecimal.ZERO,
+    var basePrice: BigDecimal = BigDecimal.ZERO,
 
     /** 범주 */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,4 +38,21 @@ class Product(
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
     var productOptionGroups: MutableList<ProductOptionGroup> = mutableListOf()
 ) : TsidBaseEntity<Product>() {
+    fun update(
+        code: String,
+        name: String,
+        basePrice: BigDecimal,
+        barcode: String? = null,
+        description: String? = null,
+        uom: String? = null,
+        category: ProductCategory? = null
+    ) {
+        this.code = code
+        this.name = name
+        this.basePrice = basePrice
+        this.barcode = barcode
+        this.description = description
+        this.uom = uom
+        this.category = category
+    }
 }

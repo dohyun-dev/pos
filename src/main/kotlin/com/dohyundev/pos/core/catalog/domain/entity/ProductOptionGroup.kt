@@ -23,4 +23,18 @@ class ProductOptionGroup(
     var productOptions: MutableList<ProductOption> = mutableListOf(),
 
     var displayOrder: Int = 0,
-) : TsidBaseEntity<ProductOptionGroup>()
+) : TsidBaseEntity<ProductOptionGroup>() {
+    fun update(
+        name: String,
+        isRequired: Boolean?,
+        isMultiSelect: Boolean?,
+        description: String? = null,
+        displayOrder: Int?,
+    ) {
+        this.name = name
+        this.isRequired = isRequired ?: this.isRequired
+        this.isMultiSelect = isMultiSelect ?: this.isMultiSelect
+        this.description = description
+        this.displayOrder = displayOrder ?: this.displayOrder
+    }
+}
