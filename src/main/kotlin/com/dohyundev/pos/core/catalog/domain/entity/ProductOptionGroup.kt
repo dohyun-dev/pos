@@ -1,40 +1,54 @@
 package com.dohyundev.pos.core.catalog.domain.entity
 
-import com.dohyundev.common.entity.TsidBaseEntity
-import jakarta.persistence.*
+import com.dohyundev.common.entity.Activatable
+import com.dohyundev.common.entity.DisplayOrderable
+import com.dohyundev.common.entity.SoftDeleteTsidBaseEntity
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.OneToMany
 
 @Entity
 class ProductOptionGroup(
-    /** 연결된 상품 */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    val product: Product,
-
     @Column(nullable = false)
     var name: String,
 
     var description: String? = null,
 
+    @Column(nullable = false)
     var isRequired: Boolean = false,
 
-    var isMultiSelect: Boolean = false,
+    @Column(nullable = false)
+    var selectableOptionCount: Int = 1,
 
-    @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL])
-    var productOptions: MutableList<ProductOption> = mutableListOf(),
+    @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var options: MutableList<ProductOption> = mutableListOf(),
 
-    var displayOrder: Int = 0,
-) : TsidBaseEntity<ProductOptionGroup>() {
+    @Column(nullable = false)
+    override var displayOrder: Long = 0,
+
+    @Column(nullable = false)
+    override var isActive: Boolean = true
+) : SoftDeleteTsidBaseEntity<ProductOptionGroup>(), DisplayOrderable, Activatable {
     fun update(
         name: String,
-        isRequired: Boolean?,
-        isMultiSelect: Boolean?,
         description: String? = null,
-        displayOrder: Int?,
+        isRequired: Boolean?,
+        selectableOptionCount: Int,
+        options: MutableList<ProductOption> = mutableListOf(),
     ) {
         this.name = name
         this.isRequired = isRequired ?: this.isRequired
-        this.isMultiSelect = isMultiSelect ?: this.isMultiSelect
         this.description = description
-        this.displayOrder = displayOrder ?: this.displayOrder
+        this.selectableOptionCount = selectableOptionCount
+        this.options = options
+    }
+
+    fun changeOptions(options: Collection<ProductOption>) {
+        this.options.clear()
+        this.options.addAll(options)
+        this.options.forEachIndexed { index, option ->
+            option.changeDisplayOrder(index.toLong())
+        }
     }
 }

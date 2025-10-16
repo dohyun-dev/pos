@@ -1,8 +1,7 @@
 package com.dohyundev.pos.core.catalog.api
 
-import com.dohyundev.pos.core.catalog.application.ProductOptionGroupCommandServiceV1
+import com.dohyundev.pos.core.catalog.application.ProductOptionCommandServiceV1
 import com.dohyundev.pos.core.catalog.application.command.ProductCommandServiceV1
-import com.dohyundev.pos.core.catalog.application.command.ProductOptionCommandServiceV1
 import com.dohyundev.pos.core.catalog.dto.ProductCommand
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/products")
 class ProductApiControllerV1(
     private val productCommandService: ProductCommandServiceV1,
-    private val productOptionGroupCommandService: ProductOptionGroupCommandServiceV1,
+    private val productOptionGroupCommandService: ProductOptionCommandServiceV1,
     private val productOptionCommandService: ProductOptionCommandServiceV1
 ) {
     @PostMapping

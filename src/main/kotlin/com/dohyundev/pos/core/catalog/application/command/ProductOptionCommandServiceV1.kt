@@ -1,48 +1,44 @@
-package com.dohyundev.pos.core.catalog.application.command
+package com.dohyundev.pos.core.catalog.application
 
-import com.dohyundev.pos.core.catalog.domain.entity.ProductOption
+import com.dohyundev.pos.core.catalog.domain.entity.ProductOptionGroup
 import com.dohyundev.pos.core.catalog.domain.repository.ProductOptionGroupRepository
-import com.dohyundev.pos.core.catalog.domain.repository.ProductOptionRepository
-import com.dohyundev.pos.core.catalog.dto.ProductCommand
-import jakarta.persistence.EntityNotFoundException
+import com.dohyundev.pos.core.catalog.dto.ProductOptionCommand
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
 
 @Service
 class ProductOptionCommandServiceV1(
-    private val optionGroupRepository: ProductOptionGroupRepository,
-    private val optionRepository: ProductOptionRepository
+    private val productOptionGroupRepository: ProductOptionGroupRepository
 ) {
     @Transactional
-    fun create(groupId: String, command: ProductCommand.CreateOption): ProductOption {
-        val group = optionGroupRepository.findById(groupId)
-            .orElseThrow { EntityNotFoundException("옵션 그룹이 존재하지 않습니다. $groupId") }
-
-        val option = command.toEntity(group)
-        return optionRepository.save(option)
+    fun createProductOptionGroup(command: ProductOptionCommand.CreateProductOptionGroup): ProductOptionGroup {
+        val productOptionGroup = command.toEntity()
+        return productOptionGroupRepository.save(productOptionGroup)
     }
 
     @Transactional
-    fun update(optionId: String, command: ProductCommand.UpdateOption): ProductOption {
-        val option = optionRepository.findById(optionId)
-            .orElseThrow { IllegalArgumentException("옵션을 찾을 수 없습니다: $optionId") }
+    fun update(groupId: String, command: ProductOptionCommand.CreateProductOptionGroup): ProductOptionGroup {
+        val group = productOptionGroupRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("옵션 그룹을 찾을 수 없습니다: $groupId") }
 
-        option.update(
+        group.update(
             name = command.name!!,
             description = command.description,
-            displayOrder = command.displayOrder,
-            extraPrice = command.extraPrice,
-            defaultSelected = command.defaultSelected
+            isRequired = command.isRequired ?: false,
+            selectableOptionCount = command.selectableOptionCount ?: 0,
         )
 
-        return optionRepository.save(option)
+        val options = command.options.map { it.toEntity(group) }
+
+        group.changeOptions(options)
+
+        return productOptionGroupRepository.save(group)
     }
 
     @Transactional
-    fun delete(optionId: String) {
-        val option = optionRepository.findById(optionId)
-            .orElseThrow { IllegalArgumentException("옵션을 찾을 수 없습니다: $optionId") }
-        optionRepository.delete(option)
+    fun delete(groupId: String) {
+        val group = productOptionGroupRepository.findById(groupId)
+            .orElseThrow { IllegalArgumentException("옵션 그룹을 찾을 수 없습니다: $groupId") }
+        productOptionGroupRepository.delete(group)
     }
 }

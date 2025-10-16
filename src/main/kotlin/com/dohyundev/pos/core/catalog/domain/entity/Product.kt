@@ -34,9 +34,6 @@ class Product(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "m_product_category_id")
     var category: ProductCategory? = null,
-
-    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL])
-    var productOptionGroups: MutableList<ProductOptionGroup> = mutableListOf()
 ) : TsidBaseEntity<Product>() {
     fun update(
         code: String,
