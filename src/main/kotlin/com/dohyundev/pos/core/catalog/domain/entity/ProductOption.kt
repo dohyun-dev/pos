@@ -8,7 +8,7 @@ import java.math.BigDecimal
 @Entity
 class ProductOption(
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "m_option_group_id")
+    @JoinColumn(name = "option_group_id")
     var group: ProductOptionGroup,
 
     @Column(nullable = false)

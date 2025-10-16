@@ -24,12 +24,17 @@ class ProductOptionGroup(
     @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
     var options: MutableList<ProductOption> = mutableListOf(),
 
+    /** 이 옵션 그룹에 연결된 상품 매핑 */
+    @OneToMany(mappedBy = "optionGroup", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var productMappings: MutableList<ProductOptionGroupMapping> = mutableListOf(),
+
     @Column(nullable = false)
     override var displayOrder: Long = 0,
 
     @Column(nullable = false)
     override var isActive: Boolean = true
 ) : SoftDeleteTsidBaseEntity<ProductOptionGroup>(), DisplayOrderable, Activatable {
+    
     fun update(
         name: String,
         description: String? = null,

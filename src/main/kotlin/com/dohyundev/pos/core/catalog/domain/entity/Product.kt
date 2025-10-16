@@ -32,9 +32,14 @@ class Product(
 
     /** 범주 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "m_product_category_id")
+    @JoinColumn(name = "product_category_id")
     var category: ProductCategory? = null,
+
+    /** 옵션 그룹 매핑 */
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var optionGroupMappings: MutableList<ProductOptionGroupMapping> = mutableListOf()
 ) : TsidBaseEntity<Product>() {
+    
     fun update(
         code: String,
         name: String,
@@ -42,7 +47,8 @@ class Product(
         barcode: String? = null,
         description: String? = null,
         uom: String? = null,
-        category: ProductCategory? = null
+        category: ProductCategory? = null,
+        optionGroups: Collection<ProductOptionGroup> = emptyList()
     ) {
         this.code = code
         this.name = name
@@ -51,5 +57,23 @@ class Product(
         this.description = description
         this.uom = uom
         this.category = category
+        changeOptionGroupMappings(optionGroups)
+    }
+
+    /**
+     * 옵션 그룹 매핑을 변경합니다.
+     * 기존 매핑을 모두 제거하고 새로운 매핑으로 교체합니다.
+     */
+    fun changeOptionGroupMappings(optionGroups: Collection<ProductOptionGroup>) {
+        this.optionGroupMappings.clear()
+        this.optionGroupMappings.addAll(
+            optionGroups.mapIndexed { index, group ->
+                ProductOptionGroupMapping(
+                    product = this,
+                    optionGroup = group,
+                    displayOrder = index.toLong()
+                )
+            }
+        )
     }
 }
