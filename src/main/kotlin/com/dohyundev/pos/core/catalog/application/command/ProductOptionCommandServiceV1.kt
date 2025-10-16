@@ -17,7 +17,7 @@ class ProductOptionCommandServiceV1(
     }
 
     @Transactional
-    fun update(groupId: String, command: ProductOptionCommand.CreateProductOptionGroup): ProductOptionGroup {
+    fun updateProductOptionGroup(groupId: String, command: ProductOptionCommand.CreateProductOptionGroup): ProductOptionGroup {
         val group = productOptionGroupRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("옵션 그룹을 찾을 수 없습니다: $groupId") }
 
@@ -36,7 +36,7 @@ class ProductOptionCommandServiceV1(
     }
 
     @Transactional
-    fun delete(groupId: String) {
+    fun deleteProductOptionGroup(groupId: String) {
         val group = productOptionGroupRepository.findById(groupId)
             .orElseThrow { IllegalArgumentException("옵션 그룹을 찾을 수 없습니다: $groupId") }
         productOptionGroupRepository.delete(group)

@@ -18,7 +18,9 @@ sealed interface ProductCommand {
         val barcode: String? = null,
         val uom: String? = null,
         val description: String? = null,
-        val category: ProductCategory? = null
+        val category: ProductCategory? = null,
+
+        val optionGroupIds: List<String> = emptyList(),
     ) : ProductCommand {
         fun toEntity(): Product = Product(
             code = code!!,
@@ -40,6 +42,7 @@ sealed interface ProductCommand {
         val description: String? = null,
         @field:DecimalMin(value = "0.0", message = "가격은 0 이상이어야 합니다.")
         val basePrice: BigDecimal? = null,
-        val uom: String? = null
+        val uom: String? = null,
+        val optionGroupIds: List<String> = emptyList(),
     ) : ProductCommand
 }
