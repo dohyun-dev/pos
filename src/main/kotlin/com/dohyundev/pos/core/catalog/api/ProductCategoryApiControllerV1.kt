@@ -41,9 +41,8 @@ class ProductCategoryApiControllerV1(
         return ResponseEntity.ok(mapOf("categoryId" to category.id))
     }
 
-    @PutMapping("/{categoryId}/display-orders")
+    @PutMapping("/display-orders")
     fun updateProductCategoryDisplayOrders(
-        @PathVariable categoryId: String,
         @Valid @RequestBody request: ProductCategoryCommand.UpdateDisplayOrders
     ): ResponseEntity<Any> {
         productCategoryCommandService.updateProductCategoryDisplayOrders(command = request)
