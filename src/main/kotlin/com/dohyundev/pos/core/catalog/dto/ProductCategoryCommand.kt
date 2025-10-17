@@ -1,6 +1,7 @@
 package com.dohyundev.pos.core.catalog.dto
 
 import com.dohyundev.pos.core.catalog.domain.entity.ProductCategory
+import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 
 sealed interface ProductCategoryCommand {
@@ -18,7 +19,9 @@ sealed interface ProductCategoryCommand {
         val name: String? = null,
     ) : ProductCategoryCommand
 
+
     data class UpdateDisplayOrder(
+        @Valid
         val categoryIds: List<@NotBlank(message = "카데고리 ID는 필수입니다.") String> = emptyList(),
     )
 }
