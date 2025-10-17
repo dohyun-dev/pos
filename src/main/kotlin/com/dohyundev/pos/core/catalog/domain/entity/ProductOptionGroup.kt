@@ -2,7 +2,7 @@ package com.dohyundev.pos.core.catalog.domain.entity
 
 import com.dohyundev.common.entity.Activatable
 import com.dohyundev.common.entity.DisplayOrderable
-import com.dohyundev.common.entity.SoftDeleteTsidBaseEntity
+import com.dohyundev.common.entity.TsidBaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -33,7 +33,7 @@ class ProductOptionGroup(
 
     @Column(nullable = false)
     override var isActive: Boolean = true
-) : SoftDeleteTsidBaseEntity<ProductOptionGroup>(), DisplayOrderable, Activatable {
+) : TsidBaseEntity<ProductOptionGroup>(), DisplayOrderable, Activatable {
     
     fun update(
         name: String,

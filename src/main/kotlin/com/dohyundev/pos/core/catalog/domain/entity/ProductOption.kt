@@ -1,11 +1,12 @@
 package com.dohyundev.pos.core.catalog.domain.entity
 
 import com.dohyundev.common.entity.DisplayOrderable
-import com.dohyundev.common.entity.SoftDeleteTsidBaseEntity
+import com.dohyundev.common.entity.TsidBaseEntity
 import jakarta.persistence.*
 import java.math.BigDecimal
 
 @Entity
+@Table(name = "product_options")
 class ProductOption(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_id")
@@ -21,7 +22,8 @@ class ProductOption(
 
     @Column(nullable = false)
     override var displayOrder: Long = 0,
-    ) : SoftDeleteTsidBaseEntity<ProductOption>(), DisplayOrderable {
+    ) : TsidBaseEntity<ProductOption>(), DisplayOrderable {
+
     fun update(
         name: String,
         extraPrice: BigDecimal?,

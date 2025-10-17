@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface ProductCategoryRepository : JpaRepository<ProductCategory, String> {
-    @Query("select max(c.displayOrder) from ProductCategory c")
+    @Query("select coalesce(max(c.displayOrder), 0)  from ProductCategory c")
     fun findMaxDisplayOrder(): Long
     
     @Query("select c from ProductCategory c where c.displayOrder < :displayOrder order by c.displayOrder desc limit 1")

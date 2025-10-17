@@ -55,4 +55,10 @@ class ProductCategoryCommandServiceV1(
         val productCategory = productCategoryRepository.findByIdOrNull(categoryId) ?: throw EntityNotFoundException()
         productCategoryRepository.delete(productCategory)
     }
+
+    @Transactional
+    fun toggleActive(categoryId: String) {
+        val productCategory = productCategoryRepository.findByIdOrNull(categoryId) ?: throw EntityNotFoundException()
+        productCategory.toggleActive()
+    }
 }
