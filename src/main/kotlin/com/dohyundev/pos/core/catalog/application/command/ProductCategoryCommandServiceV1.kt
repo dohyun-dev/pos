@@ -35,7 +35,7 @@ class ProductCategoryCommandServiceV1(
     }
 
     @Transactional
-    fun updateProductCategoryDisplayOrders(command: ProductCategoryCommand.UpdateDisplayOrders): List<ProductCategory> {
+    fun updateProductCategoryDisplayOrders(command: ProductCategoryCommand.UpdateDisplayOrder): List<ProductCategory> {
         val categoriesById = productCategoryRepository.findAllById(command.categoryIds)
             .associateBy { it.id }
 

@@ -18,7 +18,7 @@ sealed interface ProductCategoryCommand {
         val name: String? = null,
     ) : ProductCategoryCommand
 
-    data class UpdateDisplayOrders(
+    data class UpdateDisplayOrder(
         val categoryIds: List<@NotBlank(message = "카데고리 ID는 필수입니다.") String> = emptyList(),
     )
 }

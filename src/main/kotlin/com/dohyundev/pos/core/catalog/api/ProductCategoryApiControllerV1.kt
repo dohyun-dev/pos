@@ -43,7 +43,7 @@ class ProductCategoryApiControllerV1(
 
     @PutMapping("/display-orders")
     fun updateProductCategoryDisplayOrders(
-        @Valid @RequestBody request: ProductCategoryCommand.UpdateDisplayOrders
+        @Valid @RequestBody request: ProductCategoryCommand.UpdateDisplayOrder
     ): ResponseEntity<Any> {
         productCategoryCommandService.updateProductCategoryDisplayOrders(command = request)
         return ResponseEntity.ok().build()
