@@ -1,6 +1,5 @@
 package com.dohyundev.pos.core.catalog.application.command
 
-import com.dohyundev.common.vo.MoveDirection
 import com.dohyundev.pos.core.catalog.domain.entity.ProductCategory
 import com.dohyundev.pos.core.catalog.domain.repository.ProductCategoryRepository
 import com.dohyundev.pos.core.catalog.dto.ProductCategoryCommand
@@ -36,20 +35,19 @@ class ProductCategoryCommandServiceV1(
     }
 
     @Transactional
-    fun moveProductCategory(command: ProductCategoryCommand.MoveProductCategory): ProductCategory {
-        val productCategory = productCategoryRepository.findByIdOrNull(command.categoryId!!)
-            ?: throw EntityNotFoundException("ProductCategory not found: ${command.categoryId}")
+    fun updateProductCategoryDisplayOrders(command: ProductCategoryCommand.UpdateDisplayOrders): List<ProductCategory> {
+        val categoriesById = productCategoryRepository.findAllById(command.categoryIds)
+            .associateBy { it.id }
 
-        val targetCategory = when (command.direction!!) {
-            MoveDirection.UP -> productCategoryRepository.findPrevious(productCategory.displayOrder)
-            MoveDirection.DOWN -> productCategoryRepository.findNext(productCategory.displayOrder)
+        val updatedCategories = command.categoryIds.mapIndexed { index, categoryId ->
+            val category = categoriesById[categoryId]
+                ?: throw EntityNotFoundException("ProductCategory not found: $categoryId")
+            category.changeDisplayOrder(index + 1L)
+            category
         }
 
-        targetCategory?.let { productCategory.swapDisplayOrder(it) }
-
-        return productCategory
+        return updatedCategories
     }
-
     @Transactional
     fun deleteProductCategory(categoryId: String) {
         val productCategory = productCategoryRepository.findByIdOrNull(categoryId) ?: throw EntityNotFoundException()
