@@ -15,7 +15,7 @@ class DiscountPolicyCommandServiceV1(
     }
 
     @Transactional
-    fun updateDiscountPolicy(command: DiscountPolicyCommand.Update) {
+    fun updateDiscountPolicy(discountPolicyId: String, command: DiscountPolicyCommand.Update) {
 
     }
 

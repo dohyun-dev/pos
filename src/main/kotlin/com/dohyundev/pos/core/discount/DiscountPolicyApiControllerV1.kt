@@ -2,14 +2,7 @@ package com.dohyundev.pos.core.discount
 
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/discount-policies")
@@ -31,16 +24,16 @@ class DiscountPolicyApiControllerV1(
         return ResponseEntity.ok().build()
     }
 
-    @PutMapping("/{discount-policy-id}")
+    @PutMapping("/{discountPolicyId}")
     fun updateDiscountPolicy(
         @PathVariable discountPolicyId: String,
         @Valid @RequestBody request: DiscountPolicyCommand.Update
     ): ResponseEntity<Any> {
-        discountPolicyCommandService.updateDiscountPolicy(request)
+        discountPolicyCommandService.updateDiscountPolicy(discountPolicyId, request)
         return ResponseEntity.ok().build()
     }
 
-    @DeleteMapping("/{discount-policy-id}")
+    @DeleteMapping("/{discountPolicyId}")
     fun deleteCreatePolicy(
         @PathVariable discountPolicyId: String,
     ): ResponseEntity<Any> {
