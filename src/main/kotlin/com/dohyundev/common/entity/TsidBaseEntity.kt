@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 @EntityListeners(AuditingEntityListener::class)
 @MappedSuperclass
-abstract class TsidBaseEntity<T : TsidBaseEntity<T>> : BaseEntity<T>() {
+abstract class TsidBaseEntity : BaseEntity<TsidBaseEntity>() {
     @Id
     @Tsid
     val id: String? = null

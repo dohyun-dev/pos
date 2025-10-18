@@ -1,0 +1,59 @@
+package com.dohyundev.pos.core.catalog.option_group
+
+import com.dohyundev.common.entity.Activatable
+import com.dohyundev.common.entity.DisplayOrderable
+import com.dohyundev.common.entity.TsidBaseEntity
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.OneToMany
+
+@Entity
+class OptionGroup(
+    @Column(nullable = false)
+    var name: String,
+
+    var description: String? = null,
+
+    @Column(nullable = false)
+    var isRequired: Boolean = false,
+
+    @Column(nullable = false)
+    var selectableOptionCount: Int = 1,
+
+    @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var options: MutableList<Option> = mutableListOf(),
+
+    /** 이 옵션 그룹에 연결된 상품 매핑 */
+    @OneToMany(mappedBy = "optionGroup", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var productMappings: MutableList<OptionGroupItem> = mutableListOf(),
+
+    @Column(nullable = false)
+    override var displayOrder: Long = 0,
+
+    @Column(nullable = false)
+    override var isActive: Boolean = true
+) : TsidBaseEntity(), DisplayOrderable, Activatable {
+    
+    fun update(
+        name: String,
+        description: String? = null,
+        isRequired: Boolean?,
+        selectableOptionCount: Int,
+        options: MutableList<Option> = mutableListOf(),
+    ) {
+        this.name = name
+        this.isRequired = isRequired ?: this.isRequired
+        this.description = description
+        this.selectableOptionCount = selectableOptionCount
+        this.options = options
+    }
+
+    fun changeOptions(options: Collection<Option>) {
+        this.options.clear()
+        this.options.addAll(options)
+        this.options.forEachIndexed { index, option ->
+            option.changeDisplayOrder(index.toLong())
+        }
+    }
+}
