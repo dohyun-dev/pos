@@ -6,11 +6,19 @@ import jakarta.persistence.Entity
 import java.math.BigDecimal
 
 @Entity
-abstract class DiscountPolicy(
+class DiscountPolicy(
     @Column(nullable = false, unique = true)
     var name: String,
+
     var description: String? = null,
+
     @Column(nullable = false)
-    var amount: BigDecimal,
+    var value: BigDecimal,
+
+    @Column(nullable = false)
+    var type: DiscountPolicyType,
 ) : TsidBaseEntity() {
+    fun applyDiscount(amount: BigDecimal): BigDecimal {
+        return type.apply(value, amount)
+    }
 }
