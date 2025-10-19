@@ -24,10 +24,6 @@ class OptionGroup(
     @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
     var options: MutableList<Option> = mutableListOf(),
 
-    /** 이 옵션 그룹에 연결된 상품 매핑 */
-    @OneToMany(mappedBy = "optionGroup", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var productMappings: MutableList<OptionGroupItem> = mutableListOf(),
-
     @Column(nullable = false)
     override var displayOrder: Long = 0,
 

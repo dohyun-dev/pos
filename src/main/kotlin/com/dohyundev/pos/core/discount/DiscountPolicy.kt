@@ -18,7 +18,4 @@ class DiscountPolicy(
     @Column(nullable = false)
     var type: DiscountPolicyType,
 ) : TsidBaseEntity() {
-    fun applyDiscount(amount: BigDecimal): BigDecimal {
-        return type.apply(value, amount)
-    }
 }
