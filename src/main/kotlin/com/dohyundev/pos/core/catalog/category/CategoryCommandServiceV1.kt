@@ -14,7 +14,7 @@ class CategoryCommandServiceV1(
         val maxDisplayOrder = categoryRepository.findMaxDisplayOrder()
         
         val category = Category(
-            name = command.name,
+            name = command.name!!,
             description = command.description,
             displayOrder = maxDisplayOrder + 1
         )
@@ -28,7 +28,7 @@ class CategoryCommandServiceV1(
             ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: $categoryId")
         
         category.update(
-            name = command.name,
+            name = command.name!!,
             description = command.description
         )
         
@@ -37,16 +37,16 @@ class CategoryCommandServiceV1(
 
     @Transactional
     fun bulkUpdateCategories(command: CategoryCommand.BulkUpdate) {
-        command.commands.forEach { item ->
-            val category = categoryRepository.findByIdOrNull(item.categoryId)
+        command.commands!!.forEach { item ->
+            val category = categoryRepository.findByIdOrNull(item.categoryId!!)
                 ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: ${item.categoryId}")
             
             category.update(
-                name = item.name,
+                name = item.name!!,
                 description = item.description
             )
             
-            category.changeDisplayOrder(item.displayOrder)
+            category.changeDisplayOrder(item.displayOrder!!)
             
             item.isActive?.let { category.isActive = it }
         }

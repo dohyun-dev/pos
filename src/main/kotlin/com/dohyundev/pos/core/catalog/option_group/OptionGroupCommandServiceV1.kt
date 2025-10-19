@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 
 @Service
 class OptionGroupCommandServiceV1(
@@ -12,18 +13,18 @@ class OptionGroupCommandServiceV1(
     @Transactional
     fun createOptionGroup(command: OptionGroupCommand.CreateProductOptionGroup): String {
         val optionGroup = OptionGroup(
-            name = command.name,
+            name = command.name!!,
             description = command.description,
-            isRequired = command.isRequired,
-            selectableOptionCount = command.selectableOptionCount
+            isRequired = command.isRequired ?: false,
+            selectableOptionCount = command.selectableOptionCount ?: 1
         )
         
-        val options = command.options.mapIndexed { index, optionCommand ->
+        val options = command.options!!.mapIndexed { index, optionCommand ->
             Option(
                 group = optionGroup,
-                name = optionCommand.name,
+                name = optionCommand.name!!,
                 description = optionCommand.description,
-                extraPrice = optionCommand.extraPrice,
+                extraPrice = optionCommand.extraPrice ?: BigDecimal.ZERO,
                 displayOrder = index.toLong()
             )
         }
@@ -35,17 +36,17 @@ class OptionGroupCommandServiceV1(
 
     @Transactional
     fun updateOptionGroup(command: OptionGroupCommand.UpdateOptionGroup) {
-        val optionGroup = optionGroupRepository.findByIdOrNull(command.optionGroupId)
+        val optionGroup = optionGroupRepository.findByIdOrNull(command.optionGroupId!!)
             ?: throw EntityNotFoundException("옵션 그룹을 찾을 수 없습니다. ID: ${command.optionGroupId}")
         
-        val updatedOptions = command.options.mapIndexed { index, optionCommand ->
+        val updatedOptions = command.options!!.mapIndexed { index, optionCommand ->
             if (optionCommand.optionId != null) {
                 // 기존 옵션 업데이트
                 val existingOption = optionGroup.options.find { it.id == optionCommand.optionId }
                     ?: throw EntityNotFoundException("옵션을 찾을 수 없습니다. ID: ${optionCommand.optionId}")
                 
                 existingOption.update(
-                    name = optionCommand.name,
+                    name = optionCommand.name!!,
                     description = optionCommand.description,
                     extraPrice = optionCommand.extraPrice
                 )
@@ -55,19 +56,19 @@ class OptionGroupCommandServiceV1(
                 // 새로운 옵션 생성
                 Option(
                     group = optionGroup,
-                    name = optionCommand.name,
+                    name = optionCommand.name!!,
                     description = optionCommand.description,
-                    extraPrice = optionCommand.extraPrice,
+                    extraPrice = optionCommand.extraPrice ?: BigDecimal.ZERO,
                     displayOrder = index.toLong()
                 )
             }
         }.toMutableList()
         
         optionGroup.update(
-            name = command.name,
+            name = command.name!!,
             description = command.description,
             isRequired = command.isRequired,
-            selectableOptionCount = command.selectableOptionCount,
+            selectableOptionCount = command.selectableOptionCount ?: 1,
             options = updatedOptions
         )
         
@@ -76,13 +77,13 @@ class OptionGroupCommandServiceV1(
 
     @Transactional
     fun bulkUpdateOptionGroup(command: OptionGroupCommand.BulkUpdateOptionGroup) {
-        command.commands.forEach { item ->
-            val optionGroup = optionGroupRepository.findByIdOrNull(item.optionGroupId)
+        command.commands!!.forEach { item ->
+            val optionGroup = optionGroupRepository.findByIdOrNull(item.optionGroupId!!)
                 ?: throw EntityNotFoundException("옵션 그룹을 찾을 수 없습니다. ID: ${item.optionGroupId}")
             
-            optionGroup.name = item.name
+            optionGroup.name = item.name!!
             optionGroup.description = item.description
-            optionGroup.changeDisplayOrder(item.displayOrder)
+            optionGroup.changeDisplayOrder(item.displayOrder!!)
             
             item.isActive?.let { optionGroup.isActive = it }
         }

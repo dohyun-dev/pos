@@ -8,11 +8,11 @@ import java.math.BigDecimal
 interface ProductCommand {
     data class CreateProduct(
         @field:NotBlank(message = "카테고리 ID는 필수입니다.")
-        val categoryId: String,
+        val categoryId: String?,
         
         @field:NotBlank(message = "제품명은 필수입니다.")
         @field:Size(max = 100, message = "제품명은 100자를 초과할 수 없습니다.")
-        val name: String,
+        val name: String?,
         
         @field:Size(max = 500, message = "설명은 500자를 초과할 수 없습니다.")
         val description: String? = null,
@@ -22,24 +22,24 @@ interface ProductCommand {
         
         @field:NotNull(message = "기본 가격은 필수입니다.")
         @field:DecimalMin(value = "0", message = "기본 가격은 0 이상이어야 합니다.")
-        val basePrice: BigDecimal,
+        val basePrice: BigDecimal?,
         
         @field:NotNull(message = "세금 유형은 필수입니다.")
-        val taxType: TaxType = TaxType.TAX,
+        val taxType: TaxType? = null,
         
-        val optionGroupIds: List<String> = emptyList()
+        val optionGroupIds: List<String>? = null
     )
 
     data class UpdateProduct(
         @field:NotBlank(message = "제품 ID는 필수입니다.")
-        val productId: String,
+        val productId: String?,
         
         @field:NotBlank(message = "카테고리 ID는 필수입니다.")
-        val categoryId: String,
+        val categoryId: String?,
         
         @field:NotBlank(message = "제품명은 필수입니다.")
         @field:Size(max = 100, message = "제품명은 100자를 초과할 수 없습니다.")
-        val name: String,
+        val name: String?,
         
         @field:Size(max = 500, message = "설명은 500자를 초과할 수 없습니다.")
         val description: String? = null,
@@ -49,19 +49,19 @@ interface ProductCommand {
         
         @field:NotNull(message = "기본 가격은 필수입니다.")
         @field:DecimalMin(value = "0", message = "기본 가격은 0 이상이어야 합니다.")
-        val basePrice: BigDecimal,
+        val basePrice: BigDecimal?,
         
         @field:NotNull(message = "세금 유형은 필수입니다.")
-        val taxType: TaxType = TaxType.TAX,
+        val taxType: TaxType? = null,
         
-        val optionGroupIds: List<String> = emptyList()
+        val optionGroupIds: List<String>? = null
     )
 
     data class ExchangeProductPosition(
         @field:NotBlank(message = "제품 ID는 필수입니다.")
-        val productId: String,
+        val productId: String?,
         
         @field:NotNull(message = "이동 방향은 필수입니다.")
-        val direction: MoveDirection
+        val direction: MoveDirection?
     )
 }
