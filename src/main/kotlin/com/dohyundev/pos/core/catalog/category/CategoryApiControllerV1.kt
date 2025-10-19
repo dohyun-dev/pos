@@ -3,6 +3,7 @@ package com.dohyundev.pos.core.catalog.category
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 @RestController
 @RequestMapping("/api/v1/catalog/categories")
@@ -11,39 +12,47 @@ class CategoryApiControllerV1(
     private val categoryQueryService: CategoryQueryServiceV1
 ) {
     @GetMapping
-    fun getCategories(): ResponseEntity<List<Any>> {
-        // TODO
-        return ResponseEntity.ok().build()
+    fun getCategories(): ResponseEntity<List<CategoryResponse.Summary>> {
+        val categories = categoryQueryService.getCategories()
+        return ResponseEntity.ok(categories)
+    }
+
+    @GetMapping("/{categoryId}")
+    fun getCategory(
+        @PathVariable categoryId: String
+    ): ResponseEntity<CategoryResponse.Detail> {
+        val category = categoryQueryService.getCategory(categoryId)
+        return ResponseEntity.ok(category)
     }
 
     @PostMapping
     fun createCategory(
         @Valid @RequestBody request: CategoryCommand.CreateCategory
-    ): ResponseEntity<Any> {
-        categoryCommandService.createCategory(request)
-        return ResponseEntity.ok().build()
+    ): ResponseEntity<Void> {
+        val categoryId = categoryCommandService.createCategory(request)
+        return ResponseEntity.created(URI.create("/api/v1/catalog/categories/$categoryId")).build()
     }
 
-    @PutMapping
+    @PutMapping("/{categoryId}")
     fun updateCategory(
         @PathVariable categoryId: String,
         @Valid @RequestBody request: CategoryCommand.UpdateCategory
-    ): ResponseEntity<Any> {
+    ): ResponseEntity<Void> {
         categoryCommandService.updateCategory(categoryId, request)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.noContent().build()
     }
 
     @PutMapping("/bulk")
     fun bulkUpdateCategories(
         @Valid @RequestBody request: CategoryCommand.BulkUpdate
-    ): ResponseEntity<Any> {
+    ): ResponseEntity<Void> {
         categoryCommandService.bulkUpdateCategories(command = request)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{categoryId}")
     fun deleteCategory(@PathVariable categoryId: String): ResponseEntity<Void> {
         categoryCommandService.deleteCategory(categoryId)
-        return ResponseEntity.ok().build()
+        return ResponseEntity.noContent().build()
     }
 }

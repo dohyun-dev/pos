@@ -3,6 +3,7 @@ package com.dohyundev.pos.core.catalog.product
 import com.dohyundev.common.entity.TsidBaseEntity
 import com.dohyundev.common.enum.TaxType
 import com.dohyundev.pos.core.catalog.category.Category
+import com.dohyundev.pos.core.catalog.option_group.OptionGroup
 import jakarta.persistence.*
 import java.math.BigDecimal
 
@@ -31,7 +32,30 @@ class Product(
     var optionGroups: MutableList<ProductOption> = mutableListOf(),
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     var taxType: TaxType = TaxType.TAX,
 ) : TsidBaseEntity() {
 
+    fun update(
+        category: Category,
+        name: String,
+        description: String?,
+        barcode: String?,
+        basePrice: BigDecimal,
+        taxType: TaxType
+    ) {
+        this.category = category
+        this.name = name
+        this.description = description
+        this.barcode = barcode
+        this.basePrice = basePrice
+        this.taxType = taxType
+    }
+
+    fun updateOptionGroups(optionGroups: List<OptionGroup>) {
+        this.optionGroups.clear()
+        this.optionGroups.addAll(
+            optionGroups.map { ProductOption(product = this, optionGroup = it) }
+        )
+    }
 }
