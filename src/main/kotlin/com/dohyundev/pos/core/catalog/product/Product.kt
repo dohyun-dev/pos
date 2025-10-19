@@ -29,7 +29,7 @@ class Product(
     var basePrice: BigDecimal = BigDecimal.ZERO,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var optionGroups: MutableList<ProductOption> = mutableListOf(),
+    var optionGroups: MutableList<ProductOptionGroup> = mutableListOf(),
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -37,12 +37,13 @@ class Product(
 ) : TsidBaseEntity() {
 
     fun update(
-        category: Category,
-        name: String,
-        description: String?,
-        barcode: String?,
-        basePrice: BigDecimal,
-        taxType: TaxType
+        category: Category = this.category,
+        name: String = this.name,
+        description: String? = this.description,
+        barcode: String? = this.barcode,
+        basePrice: BigDecimal = this.basePrice,
+        taxType: TaxType = this.taxType,
+        optionGroups: Collection<OptionGroup> = this.optionGroups.map { it -> it.optionGroup },
     ) {
         this.category = category
         this.name = name
@@ -52,10 +53,8 @@ class Product(
         this.taxType = taxType
     }
 
-    fun updateOptionGroups(optionGroups: List<OptionGroup>) {
+    fun changeOptionGroups(optionGroups: Collection<ProductOptionGroup>) {
         this.optionGroups.clear()
-        this.optionGroups.addAll(
-            optionGroups.map { ProductOption(product = this, optionGroup = it) }
-        )
+        this.optionGroups.addAll(optionGroups)
     }
 }

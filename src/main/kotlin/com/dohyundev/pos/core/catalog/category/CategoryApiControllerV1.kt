@@ -33,15 +33,6 @@ class CategoryApiControllerV1(
         return ResponseEntity.created(URI.create("/api/v1/catalog/categories/$categoryId")).build()
     }
 
-    @PutMapping("/{categoryId}")
-    fun updateCategory(
-        @PathVariable categoryId: String,
-        @Valid @RequestBody request: CategoryCommand.UpdateCategory
-    ): ResponseEntity<Void> {
-        categoryCommandService.updateCategory(categoryId, request)
-        return ResponseEntity.noContent().build()
-    }
-
     @PutMapping("/bulk")
     fun bulkUpdateCategories(
         @Valid @RequestBody request: CategoryCommand.BulkUpdate

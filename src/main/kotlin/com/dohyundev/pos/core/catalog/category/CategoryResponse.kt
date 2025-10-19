@@ -7,7 +7,7 @@ interface CategoryResponse {
         val id: String,
         val name: String,
         val description: String?,
-        val displayOrder: Long,
+        val displayOrder: Int,
         val isActive: Boolean,
         val createdAt: LocalDateTime?,
         val modifiedAt: LocalDateTime?

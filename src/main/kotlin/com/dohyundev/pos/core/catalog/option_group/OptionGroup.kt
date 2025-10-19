@@ -30,26 +30,27 @@ class OptionGroup(
     @Column(nullable = false)
     override var isActive: Boolean = true
 ) : TsidBaseEntity(), DisplayOrderable, Activatable {
-    
+
     fun update(
-        name: String,
-        description: String? = null,
-        isRequired: Boolean?,
-        selectableOptionCount: Int,
-        options: MutableList<Option> = mutableListOf(),
+        name: String = this.name,
+        description: String? = this.description,
+        isRequired: Boolean = this.isRequired,
+        selectableOptionCount: Int = this.selectableOptionCount,
+        displayOrder: Long = this.displayOrder,
+        options: Collection<Option> = this.options,
+        isActive: Boolean = this.isActive,
     ) {
         this.name = name
-        this.isRequired = isRequired ?: this.isRequired
         this.description = description
+        this.isRequired = isRequired
         this.selectableOptionCount = selectableOptionCount
-        this.options = options
+        this.displayOrder = displayOrder
+        changeOptions(options)
+        this.isActive = isActive
     }
 
     fun changeOptions(options: Collection<Option>) {
         this.options.clear()
         this.options.addAll(options)
-        this.options.forEachIndexed { index, option ->
-            option.changeDisplayOrder(index.toLong())
-        }
     }
 }

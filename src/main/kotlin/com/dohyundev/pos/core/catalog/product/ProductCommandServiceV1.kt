@@ -1,6 +1,7 @@
 package com.dohyundev.pos.core.catalog.product
 
 import com.dohyundev.pos.core.catalog.category.CategoryRepository
+import com.dohyundev.pos.core.catalog.option_group.OptionGroup
 import com.dohyundev.pos.core.catalog.option_group.OptionGroupRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.repository.findByIdOrNull
@@ -18,23 +19,11 @@ class ProductCommandServiceV1(
         val category = categoryRepository.findByIdOrNull(command.categoryId!!)
             ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: ${command.categoryId}")
         
-        val product = Product(
-            category = category,
-            name = command.name!!,
-            description = command.description,
-            barcode = command.barcode,
-            basePrice = command.basePrice!!,
-            taxType = command.taxType!!
-        )
-        
-        val optionGroupIds = command.optionGroupIds ?: emptyList()
-        if (optionGroupIds.isNotEmpty()) {
-            val optionGroups = optionGroupRepository.findAllById(optionGroupIds)
-            if (optionGroups.size != optionGroupIds.size) {
-                throw EntityNotFoundException("일부 옵션 그룹을 찾을 수 없습니다.")
-            }
-            product.updateOptionGroups(optionGroups)
-        }
+        val product = command.toProduct(category)
+
+        val optionGroups = findOptionGroups(command.optionGroupIds)
+
+        product.update(optionGroups = optionGroups)
         
         return productRepository.save(product).id!!
     }
@@ -46,6 +35,8 @@ class ProductCommandServiceV1(
         
         val category = categoryRepository.findByIdOrNull(command.categoryId!!)
             ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: ${command.categoryId}")
+
+        val optionGroups = findOptionGroups(command.optionGroupIds)
         
         product.update(
             category = category,
@@ -53,19 +44,9 @@ class ProductCommandServiceV1(
             description = command.description,
             barcode = command.barcode,
             basePrice = command.basePrice!!,
-            taxType = command.taxType!!
+            taxType = command.taxType!!,
+            optionGroups = optionGroups,
         )
-        
-        val optionGroupIds = command.optionGroupIds ?: emptyList()
-        if (optionGroupIds.isNotEmpty()) {
-            val optionGroups = optionGroupRepository.findAllById(optionGroupIds)
-            if (optionGroups.size != optionGroupIds.size) {
-                throw EntityNotFoundException("일부 옵션 그룹을 찾을 수 없습니다.")
-            }
-            product.updateOptionGroups(optionGroups)
-        } else {
-            product.optionGroups.clear()
-        }
     }
 
     @Transactional
@@ -74,5 +55,16 @@ class ProductCommandServiceV1(
             ?: throw EntityNotFoundException("제품을 찾을 수 없습니다. ID: $productId")
         
         productRepository.delete(product)
+    }
+
+    private fun findOptionGroups(optionGroupIds: List<String>?): List<OptionGroup> {
+        val ids = optionGroupIds ?: return emptyList()
+        if (ids.isEmpty()) return emptyList()
+
+        val optionGroups = optionGroupRepository.findAllById(ids)
+        if (optionGroups.size != ids.size) {
+            throw EntityNotFoundException("일부 옵션 그룹을 찾을 수 없습니다.")
+        }
+        return optionGroups
     }
 }

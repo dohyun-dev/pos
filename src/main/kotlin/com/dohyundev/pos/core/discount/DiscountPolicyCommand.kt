@@ -18,7 +18,16 @@ interface DiscountPolicyCommand {
 
         @field:NotNull(message = "할인 타입은 필수입니다")
         val type: DiscountPolicyType?
-    )
+    ) {
+        fun toDiscountPolicy(): DiscountPolicy {
+            return DiscountPolicy(
+                name = name!!,
+                description = description,
+                value = value!!,
+                type = type!!
+            )
+        }
+    }
 
     data class Update(
         @field:NotBlank(message = "할인 정책 이름은 필수입니다")

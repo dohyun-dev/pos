@@ -11,13 +11,7 @@ class DiscountPolicyCommandServiceV1(
 ) {
     @Transactional
     fun createDiscountPolicy(command: DiscountPolicyCommand.Create): String {
-        val discountPolicy = DiscountPolicy(
-            name = command.name!!,
-            description = command.description,
-            value = command.value!!,
-            type = command.type!!
-        )
-        
+        val discountPolicy = command.toDiscountPolicy()
         return discountPolicyRepository.save(discountPolicy).id!!
     }
 

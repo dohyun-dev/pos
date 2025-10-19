@@ -29,8 +29,15 @@ class Category(
         this.andEvent(RemoveCategoryEvent(this))
     }
 
-    fun update(name: String, description: String?) {
+    fun update(
+        name: String = this.name,
+        description: String? = this.description,
+        displayOrder: Long = this.displayOrder,
+        isActive: Boolean = this.isActive
+    ) {
         this.name = name
         this.description = description
+        changeDisplayOrder(displayOrder)
+        this.isActive = isActive
     }
 }

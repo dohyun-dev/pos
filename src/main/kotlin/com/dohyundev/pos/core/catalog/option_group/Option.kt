@@ -25,12 +25,14 @@ class Option(
     ) : TsidBaseEntity(), DisplayOrderable {
 
     fun update(
-        name: String,
-        extraPrice: BigDecimal?,
-        description: String? = null,
+        name: String = this.name,
+        description: String? = this.description,
+        extraPrice: BigDecimal = this.extraPrice,
+        displayOrder: Long = this.displayOrder,
     ) {
         this.name = name
-        this.extraPrice = extraPrice ?: this.extraPrice
+        this.extraPrice = extraPrice
         this.description = description
+        this.displayOrder = displayOrder
     }
 }

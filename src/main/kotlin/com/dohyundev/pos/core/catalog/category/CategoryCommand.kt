@@ -14,7 +14,15 @@ sealed interface CategoryCommand {
         
         @field:Size(max = 500, message = "설명은 500자를 초과할 수 없습니다.")
         val description: String? = null
-    )
+    ) {
+        fun toCategory(displayOrder: Long): Category {
+            return Category(
+                name = name!!,
+                description = description,
+                displayOrder = displayOrder
+            )
+        }
+    }
 
     data class UpdateCategory(
         @field:NotBlank(message = "카테고리명은 필수입니다.")

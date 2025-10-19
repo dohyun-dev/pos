@@ -2,6 +2,7 @@ package com.dohyundev.pos.core.catalog.product
 
 import com.dohyundev.common.enum.TaxType
 import com.dohyundev.common.vo.MoveDirection
+import com.dohyundev.pos.core.catalog.category.Category
 import jakarta.validation.constraints.*
 import java.math.BigDecimal
 
@@ -28,7 +29,18 @@ interface ProductCommand {
         val taxType: TaxType? = null,
         
         val optionGroupIds: List<String>? = null
-    )
+    ) {
+        fun toProduct(category: Category): Product {
+            return Product(
+                category = category,
+                name = name!!,
+                description = description,
+                barcode = barcode,
+                basePrice = basePrice!!,
+                taxType = taxType!!
+            )
+        }
+    }
 
     data class UpdateProduct(
         @field:NotBlank(message = "제품 ID는 필수입니다.")

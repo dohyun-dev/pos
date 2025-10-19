@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
 
 @Service
 class OptionGroupCommandServiceV1(
@@ -12,24 +11,13 @@ class OptionGroupCommandServiceV1(
 ) {
     @Transactional
     fun createOptionGroup(command: OptionGroupCommand.CreateProductOptionGroup): String {
-        val optionGroup = OptionGroup(
-            name = command.name!!,
-            description = command.description,
-            isRequired = command.isRequired ?: false,
-            selectableOptionCount = command.selectableOptionCount ?: 1
-        )
-        
+        val optionGroup = command.toOptionGroup()
+
         val options = command.options!!.mapIndexed { index, optionCommand ->
-            Option(
-                group = optionGroup,
-                name = optionCommand.name!!,
-                description = optionCommand.description,
-                extraPrice = optionCommand.extraPrice ?: BigDecimal.ZERO,
-                displayOrder = index.toLong()
-            )
+            optionCommand.toOption(optionGroup, index.toLong())
         }
-        
-        optionGroup.options.addAll(options)
+
+        optionGroup.changeOptions(options)
         
         return optionGroupRepository.save(optionGroup).id!!
     }
@@ -39,40 +27,16 @@ class OptionGroupCommandServiceV1(
         val optionGroup = optionGroupRepository.findByIdOrNull(command.optionGroupId!!)
             ?: throw EntityNotFoundException("옵션 그룹을 찾을 수 없습니다. ID: ${command.optionGroupId}")
         
-        val updatedOptions = command.options!!.mapIndexed { index, optionCommand ->
-            if (optionCommand.optionId != null) {
-                // 기존 옵션 업데이트
-                val existingOption = optionGroup.options.find { it.id == optionCommand.optionId }
-                    ?: throw EntityNotFoundException("옵션을 찾을 수 없습니다. ID: ${optionCommand.optionId}")
-                
-                existingOption.update(
-                    name = optionCommand.name!!,
-                    description = optionCommand.description,
-                    extraPrice = optionCommand.extraPrice
-                )
-                existingOption.changeDisplayOrder(index.toLong())
-                existingOption
-            } else {
-                // 새로운 옵션 생성
-                Option(
-                    group = optionGroup,
-                    name = optionCommand.name!!,
-                    description = optionCommand.description,
-                    extraPrice = optionCommand.extraPrice ?: BigDecimal.ZERO,
-                    displayOrder = index.toLong()
-                )
-            }
-        }.toMutableList()
+        val updatedOptions = command.toOptions(optionGroup)
         
         optionGroup.update(
             name = command.name!!,
             description = command.description,
-            isRequired = command.isRequired,
+            isRequired = command.isRequired!!,
             selectableOptionCount = command.selectableOptionCount ?: 1,
-            options = updatedOptions
+            options = updatedOptions,
+            isActive = command.isActive!!
         )
-        
-        command.isActive?.let { optionGroup.isActive = it }
     }
 
     @Transactional
@@ -80,12 +44,13 @@ class OptionGroupCommandServiceV1(
         command.commands!!.forEach { item ->
             val optionGroup = optionGroupRepository.findByIdOrNull(item.optionGroupId!!)
                 ?: throw EntityNotFoundException("옵션 그룹을 찾을 수 없습니다. ID: ${item.optionGroupId}")
-            
-            optionGroup.name = item.name!!
-            optionGroup.description = item.description
-            optionGroup.changeDisplayOrder(item.displayOrder!!)
-            
-            item.isActive?.let { optionGroup.isActive = it }
+
+            optionGroup.update(
+                name = item.name!!,
+                description = item.description,
+                displayOrder = item.displayOrder!!,
+                isActive = item.isActive!!
+            )
         }
     }
 

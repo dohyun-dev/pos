@@ -22,7 +22,12 @@ class DiscountPolicy(
     var type: DiscountPolicyType,
 ) : TsidBaseEntity() {
 
-    fun update(name: String, description: String?, value: BigDecimal, type: DiscountPolicyType) {
+    fun update(
+        name: String = this.name,
+        description: String? = this.description,
+        value: BigDecimal = this.value,
+        type: DiscountPolicyType = this.type,
+    ) {
         this.name = name
         this.description = description
         this.value = value

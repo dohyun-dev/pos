@@ -20,10 +20,19 @@ interface OptionGroupCommand {
         
         @field:NotEmpty(message = "옵션은 최소 1개 이상 등록해야 합니다.")
         @field:Valid
-        val options: List<CreateProductOption>?
-    )
+        val options: List<CreateOption>?
+    ) {
+        fun toOptionGroup(): OptionGroup {
+            return OptionGroup(
+                name = name!!,
+                description = description,
+                isRequired = isRequired ?: false,
+                selectableOptionCount = selectableOptionCount ?: 1
+            )
+        }
+    }
 
-    data class CreateProductOption(
+    data class CreateOption(
         @field:NotBlank(message = "옵션 이름은 필수입니다.")
         @field:Size(max = 100, message = "옵션 이름은 100자를 초과할 수 없습니다.")
         val name: String?,
@@ -33,7 +42,17 @@ interface OptionGroupCommand {
         
         @field:DecimalMin(value = "0", message = "추가 가격은 0 이상이어야 합니다.")
         val extraPrice: BigDecimal? = null
-    )
+    ) {
+        fun toOption(group: OptionGroup, displayOrder: Long): Option {
+            return Option(
+                group = group,
+                name = name!!,
+                description = description,
+                extraPrice = extraPrice ?: BigDecimal.ZERO,
+                displayOrder = displayOrder
+            )
+        }
+    }
 
     data class UpdateOptionGroup(
         @field:NotBlank(message = "옵션 그룹 ID는 필수입니다.")
@@ -45,7 +64,7 @@ interface OptionGroupCommand {
         
         @field:Size(max = 500, message = "설명은 500자를 초과할 수 없습니다.")
         val description: String? = null,
-        
+
         val isRequired: Boolean? = null,
         
         @field:Min(value = 1, message = "선택 가능한 옵션 개수는 1 이상이어야 합니다.")
@@ -56,11 +75,15 @@ interface OptionGroupCommand {
         @field:NotEmpty(message = "옵션은 최소 1개 이상 등록해야 합니다.")
         @field:Valid
         val options: List<UpdateProductOption>?
-    )
+    ) {
+        fun toOptions(optionGroup: OptionGroup): List<Option> {
+            return options!!.mapIndexed { index, optionCommand ->
+                optionCommand.toOption(optionGroup, index.toLong())
+            }
+        }
+    }
     
     data class UpdateProductOption(
-        val optionId: String? = null,
-        
         @field:NotBlank(message = "옵션 이름은 필수입니다.")
         @field:Size(max = 100, message = "옵션 이름은 100자를 초과할 수 없습니다.")
         val name: String?,
@@ -70,7 +93,18 @@ interface OptionGroupCommand {
         
         @field:DecimalMin(value = "0", message = "추가 가격은 0 이상이어야 합니다.")
         val extraPrice: BigDecimal? = null
-    )
+    ) {
+        fun toOption(
+            group: OptionGroup,
+            displayOrder: Long
+        ): Option = Option(
+            group = group,
+            name = name!!,
+            description = description,
+            extraPrice = extraPrice ?: BigDecimal.ZERO,
+            displayOrder = displayOrder
+        )
+    }
 
     data class BulkUpdateOptionGroup(
         @field:NotEmpty(message = "업데이트할 옵션 그룹이 없습니다.")
