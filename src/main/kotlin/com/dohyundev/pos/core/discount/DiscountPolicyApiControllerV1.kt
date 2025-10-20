@@ -19,7 +19,7 @@ class DiscountPolicyApiControllerV1(
 
     @GetMapping("/{discountPolicyId}")
     fun getDiscountPolicy(
-        @PathVariable discountPolicyId: String
+        @PathVariable discountPolicyId: Long
     ): ResponseEntity<DiscountPolicyResponse.Detail> {
         val discountPolicy = discountPolicyQueryService.getDiscountPolicy(discountPolicyId)
         return ResponseEntity.ok(discountPolicy)
@@ -35,7 +35,7 @@ class DiscountPolicyApiControllerV1(
 
     @PutMapping("/{discountPolicyId}")
     fun updateDiscountPolicy(
-        @PathVariable discountPolicyId: String,
+        @PathVariable discountPolicyId: Long,
         @Valid @RequestBody request: DiscountPolicyCommand.Update
     ): ResponseEntity<Void> {
         discountPolicyCommandService.updateDiscountPolicy(discountPolicyId, request)
@@ -44,7 +44,7 @@ class DiscountPolicyApiControllerV1(
 
     @DeleteMapping("/{discountPolicyId}")
     fun deleteDiscountPolicy(
-        @PathVariable discountPolicyId: String
+        @PathVariable discountPolicyId: Long
     ): ResponseEntity<Void> {
         discountPolicyCommandService.deleteDiscountPolicy(discountPolicyId)
         return ResponseEntity.noContent().build()

@@ -11,5 +11,5 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 abstract class TsidBaseEntity : BaseEntity<TsidBaseEntity>() {
     @Id
     @Tsid
-    val id: String? = null
+    val id: Long? = null
 }

@@ -15,7 +15,7 @@ class ProductQueryServiceV1(
             .map { ProductResponse.Summary.from(it) }
     }
 
-    fun getProduct(productId: String): ProductResponse.Detail {
+    fun getProduct(productId: Long): ProductResponse.Detail {
         val product = productRepository.findByIdOrNull(productId)
             ?: throw EntityNotFoundException("제품을 찾을 수 없습니다. ID: $productId")
         

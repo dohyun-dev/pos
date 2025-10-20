@@ -13,7 +13,7 @@ class Option(
     var group: OptionGroup,
 
     @Column(nullable = false)
-    var name: String,
+    var title: String,
 
     var description: String? = null,
 
@@ -25,12 +25,12 @@ class Option(
     ) : TsidBaseEntity(), DisplayOrderable {
 
     fun update(
-        name: String = this.name,
+        title: String = this.title,
         description: String? = this.description,
         extraPrice: BigDecimal = this.extraPrice,
         displayOrder: Long = this.displayOrder,
     ) {
-        this.name = name
+        this.title = title
         this.extraPrice = extraPrice
         this.description = description
         this.displayOrder = displayOrder

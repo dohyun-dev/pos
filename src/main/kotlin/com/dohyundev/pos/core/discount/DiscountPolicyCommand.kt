@@ -7,7 +7,7 @@ interface DiscountPolicyCommand {
     data class Create(
         @field:NotBlank(message = "할인 정책 이름은 필수입니다")
         @field:Size(max = 100, message = "할인 정책 이름은 100자를 초과할 수 없습니다")
-        val name: String?,
+        val title: String?,
 
         @field:Size(max = 500, message = "설명은 500자를 초과할 수 없습니다")
         val description: String? = null,
@@ -21,7 +21,7 @@ interface DiscountPolicyCommand {
     ) {
         fun toDiscountPolicy(): DiscountPolicy {
             return DiscountPolicy(
-                name = name!!,
+                title = title!!,
                 description = description,
                 value = value!!,
                 type = type!!
@@ -32,7 +32,7 @@ interface DiscountPolicyCommand {
     data class Update(
         @field:NotBlank(message = "할인 정책 이름은 필수입니다")
         @field:Size(max = 100, message = "할인 정책 이름은 100자를 초과할 수 없습니다")
-        val name: String?,
+        val title: String?,
 
         @field:Size(max = 500, message = "설명은 500자를 초과할 수 없습니다")
         val description: String? = null,

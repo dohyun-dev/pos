@@ -16,12 +16,12 @@ class DiscountPolicyCommandServiceV1(
     }
 
     @Transactional
-    fun updateDiscountPolicy(discountPolicyId: String, command: DiscountPolicyCommand.Update) {
+    fun updateDiscountPolicy(discountPolicyId: Long, command: DiscountPolicyCommand.Update) {
         val discountPolicy = discountPolicyRepository.findByIdOrNull(discountPolicyId) 
             ?: throw EntityNotFoundException("할인 정책을 찾을 수 없습니다. ID: $discountPolicyId")
         
         discountPolicy.update(
-            name = command.name!!,
+            title = command.title!!,
             description = command.description,
             value = command.value!!,
             type = command.type!!
@@ -29,7 +29,7 @@ class DiscountPolicyCommandServiceV1(
     }
 
     @Transactional
-    fun deleteDiscountPolicy(discountPolicyId: String) {
+    fun deleteDiscountPolicy(discountPolicyId: Long) {
         val discountPolicy = discountPolicyRepository.findByIdOrNull(discountPolicyId) 
             ?: throw EntityNotFoundException("할인 정책을 찾을 수 없습니다. ID: $discountPolicyId")
         

@@ -10,7 +10,7 @@ import java.math.BigDecimal
 @Entity
 class DiscountPolicy(
     @Column(nullable = false, unique = true)
-    var name: String,
+    var title: String,
 
     var description: String? = null,
 
@@ -23,12 +23,12 @@ class DiscountPolicy(
 ) : TsidBaseEntity() {
 
     fun update(
-        name: String = this.name,
+        title: String = this.title,
         description: String? = this.description,
         value: BigDecimal = this.value,
         type: DiscountPolicyType = this.type,
     ) {
-        this.name = name
+        this.title = title
         this.description = description
         this.value = value
         this.type = type

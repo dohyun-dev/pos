@@ -20,7 +20,7 @@ class ProductApiControllerV1(
 
     @GetMapping("/{productId}")
     fun getProduct(
-        @PathVariable productId: String
+        @PathVariable productId: Long
     ): ResponseEntity<ProductResponse.Detail> {
         val product = productQueryService.getProduct(productId)
         return ResponseEntity.ok(product)
@@ -28,7 +28,7 @@ class ProductApiControllerV1(
 
     @PostMapping
     fun createProduct(
-        @Valid @RequestBody request: ProductCommand.CreateProduct
+        @Valid @RequestBody request: ProductCommand.Upsert
     ): ResponseEntity<Void> {
         val productId = productCommandService.createProduct(request)
         return ResponseEntity.created(URI.create("/api/v1/catalog/products/$productId")).build()
@@ -52,7 +52,7 @@ class ProductApiControllerV1(
 
     @DeleteMapping("/{productId}")
     fun deleteProduct(
-        @PathVariable productId: String
+        @PathVariable productId: Long
     ): ResponseEntity<Void> {
         productCommandService.deleteProduct(productId)
         return ResponseEntity.noContent().build()

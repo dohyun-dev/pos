@@ -7,22 +7,31 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.OneToMany
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 @Entity
 class OptionGroup(
     @Column(nullable = false)
-    var name: String,
+    var title: String,
 
     var description: String? = null,
 
     @Column(nullable = false)
     var isRequired: Boolean = false,
 
-    @Column(nullable = false)
-    var selectableOptionCount: Int = 1,
-
     @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
     var options: MutableList<Option> = mutableListOf(),
+
+    @Column(nullable = false)
+    var minChoiceCount: Int = 0,
+
+    @Column(nullable = false)
+    var maxChoiceCount: Int = 1,
+
+    @JdbcTypeCode(SqlTypes.JSON_ARRAY)
+    @Column(name = "default_selected_Ids", nullable = false)
+    var defaultSelectedIds: List<Long> = emptyList(),
 
     @Column(nullable = false)
     override var displayOrder: Long = 0,
@@ -32,18 +41,22 @@ class OptionGroup(
 ) : TsidBaseEntity(), DisplayOrderable, Activatable {
 
     fun update(
-        name: String = this.name,
+        title: String = this.title,
         description: String? = this.description,
         isRequired: Boolean = this.isRequired,
-        selectableOptionCount: Int = this.selectableOptionCount,
+        options: MutableList<Option> = this.options,
+        minChoiceCount: Int = this.minChoiceCount,
+        maxChoiceCount: Int = this.maxChoiceCount,
+        defaultSelectedIds: List<Long> = this.defaultSelectedIds,
         displayOrder: Long = this.displayOrder,
-        options: Collection<Option> = this.options,
         isActive: Boolean = this.isActive,
     ) {
-        this.name = name
+        this.title = title
         this.description = description
         this.isRequired = isRequired
-        this.selectableOptionCount = selectableOptionCount
+        this.options = options
+        this.minChoiceCount = minChoiceCount
+        this.maxChoiceCount = maxChoiceCount
         this.displayOrder = displayOrder
         changeOptions(options)
         this.isActive = isActive

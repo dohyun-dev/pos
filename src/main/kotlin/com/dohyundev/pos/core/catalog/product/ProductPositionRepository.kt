@@ -3,7 +3,7 @@ package com.dohyundev.pos.core.catalog.product
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
-interface ProductPositionRepository : JpaRepository<ProductPosition, String> {
+interface ProductPositionRepository : JpaRepository<ProductPosition, Long> {
     fun findByProduct(product: Product): ProductPosition?
     
     @Query("select pp from ProductPosition pp where pp.position < :position order by pp.position desc limit 1")

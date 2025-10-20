@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 
 interface DiscountPolicyResponse {
     data class Detail(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
         val value: BigDecimal,
         val type: DiscountPolicyType,
@@ -17,7 +17,7 @@ interface DiscountPolicyResponse {
             fun from(discountPolicy: DiscountPolicy): Detail {
                 return Detail(
                     id = discountPolicy.id!!,
-                    name = discountPolicy.name,
+                    title = discountPolicy.title,
                     description = discountPolicy.description,
                     value = discountPolicy.value,
                     type = discountPolicy.type,
@@ -29,8 +29,8 @@ interface DiscountPolicyResponse {
     }
 
     data class Summary(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
         val value: BigDecimal,
         val type: DiscountPolicyType
@@ -39,7 +39,7 @@ interface DiscountPolicyResponse {
             fun from(discountPolicy: DiscountPolicy): Summary {
                 return Summary(
                     id = discountPolicy.id!!,
-                    name = discountPolicy.name,
+                    title = discountPolicy.title,
                     description = discountPolicy.description,
                     value = discountPolicy.value,
                     type = discountPolicy.type

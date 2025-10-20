@@ -15,7 +15,7 @@ class DiscountPolicyQueryServiceV1(
             .map { DiscountPolicyResponse.Summary.from(it) }
     }
 
-    fun getDiscountPolicy(discountPolicyId: String): DiscountPolicyResponse.Detail {
+    fun getDiscountPolicy(discountPolicyId: Long): DiscountPolicyResponse.Detail {
         val discountPolicy = discountPolicyRepository.findByIdOrNull(discountPolicyId)
             ?: throw EntityNotFoundException("할인 정책을 찾을 수 없습니다. ID: $discountPolicyId")
         

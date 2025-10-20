@@ -3,7 +3,7 @@ package com.dohyundev.pos.core.catalog.category
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
-interface CategoryRepository : JpaRepository<Category, String> {
+interface CategoryRepository : JpaRepository<Category, Long> {
     @Query("select coalesce(max(c.displayOrder), 0)  from Category c")
     fun findMaxDisplayOrder(): Long
     

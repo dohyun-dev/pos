@@ -19,7 +19,7 @@ class OptionGroupApiControllerV1(
 
     @GetMapping("/{optionGroupId}")
     fun getOptionGroup(
-        @PathVariable optionGroupId: String
+        @PathVariable optionGroupId: Long
     ): ResponseEntity<OptionGroupResponse.Detail> {
         val optionGroup = optionQueryService.getOptionGroup(optionGroupId)
         return ResponseEntity.ok(optionGroup)
@@ -27,30 +27,30 @@ class OptionGroupApiControllerV1(
 
     @PostMapping
     fun createOptionGroup(
-        @Valid @RequestBody request: OptionGroupCommand.CreateProductOptionGroup
+        @Valid @RequestBody request: OptionGroupAggregateCommand.UpsertOptionGroupCommand
     ): ResponseEntity<Void> {
-        val optionGroupId = optionCommandService.createOptionGroup(request)
+        val optionGroupId = optionCommandService.upsertOptionGroup(request)
         return ResponseEntity.created(URI.create("/api/v1/catalog/option-groups/$optionGroupId")).build()
     }
 
     @PutMapping
     fun updateOptionGroup(
-        @Valid @RequestBody request: OptionGroupCommand.UpdateOptionGroup
+        @Valid @RequestBody request: OptionGroupAggregateCommand.UpsertOptionGroupCommand
     ): ResponseEntity<Void> {
-        optionCommandService.updateOptionGroup(request)
+        optionCommandService.upsertOptionGroup(request)
         return ResponseEntity.noContent().build()
     }
 
     @PutMapping("/bulk")
     fun bulkUpdateOptionGroup(
-        @Valid @RequestBody request: OptionGroupCommand.BulkUpdateOptionGroup
+        @Valid @RequestBody request: OptionGroupAggregateCommand.BulkUpsertOptionGroupCommand
     ): ResponseEntity<Void> {
-        optionCommandService.bulkUpdateOptionGroup(request)
+        optionCommandService.bulkUpsertOptionGroup(request)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{optionGroupId}")
-    fun deleteOptionGroup(@PathVariable optionGroupId: String): ResponseEntity<Void> {
+    fun deleteOptionGroup(@PathVariable optionGroupId: Long): ResponseEntity<Void> {
         optionCommandService.deleteOptionGroup(optionGroupId)
         return ResponseEntity.noContent().build()
     }

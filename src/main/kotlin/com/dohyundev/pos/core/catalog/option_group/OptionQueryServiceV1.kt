@@ -16,7 +16,7 @@ class OptionQueryServiceV1(
             .map { OptionGroupResponse.Summary.from(it) }
     }
 
-    fun getOptionGroup(optionGroupId: String): OptionGroupResponse.Detail {
+    fun getOptionGroup(optionGroupId: Long): OptionGroupResponse.Detail {
         val optionGroup = optionGroupRepository.findByIdOrNull(optionGroupId)
             ?: throw EntityNotFoundException("옵션 그룹을 찾을 수 없습니다. ID: $optionGroupId")
         

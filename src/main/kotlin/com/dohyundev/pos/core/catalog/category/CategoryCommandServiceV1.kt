@@ -10,7 +10,7 @@ class CategoryCommandServiceV1(
     private val categoryRepository: CategoryRepository
 ) {
     @Transactional
-    fun createCategory(command: CategoryCommand.CreateCategory): String {
+    fun createCategory(command: CategoryCommand.CreateCategory): Long {
         val maxDisplayOrder = categoryRepository.findMaxDisplayOrder()
         val category = command.toCategory(maxDisplayOrder + 1)
         return categoryRepository.save(category).id!!
@@ -18,12 +18,12 @@ class CategoryCommandServiceV1(
 
     @Transactional
     fun bulkUpdateCategories(command: CategoryCommand.BulkUpdate) {
-        command.commands!!.forEach { item ->
-            val category = categoryRepository.findByIdOrNull(item.categoryId!!)
-                ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: ${item.categoryId}")
-            
+        command.commands.forEach { item ->
+            val category = categoryRepository.findByIdOrNull(item.id!!)
+                ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: ${item.id}")
+
             category.update(
-                name = item.name!!,
+                title = item.title!!,
                 description = item.description,
                 displayOrder = item.displayOrder!!,
                 isActive = item.isActive!!
@@ -32,10 +32,9 @@ class CategoryCommandServiceV1(
     }
 
     @Transactional
-    fun deleteCategory(categoryId: String) {
+    fun deleteCategory(categoryId: Long) {
         val category = categoryRepository.findByIdOrNull(categoryId)
             ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: $categoryId")
-        
         categoryRepository.delete(category)
     }
 }

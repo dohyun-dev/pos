@@ -19,7 +19,7 @@ class CategoryApiControllerV1(
 
     @GetMapping("/{categoryId}")
     fun getCategory(
-        @PathVariable categoryId: String
+        @PathVariable categoryId: Long
     ): ResponseEntity<CategoryResponse.Detail> {
         val category = categoryQueryService.getCategory(categoryId)
         return ResponseEntity.ok(category)
@@ -42,7 +42,7 @@ class CategoryApiControllerV1(
     }
 
     @DeleteMapping("/{categoryId}")
-    fun deleteCategory(@PathVariable categoryId: String): ResponseEntity<Void> {
+    fun deleteCategory(@PathVariable categoryId: Long): ResponseEntity<Void> {
         categoryCommandService.deleteCategory(categoryId)
         return ResponseEntity.noContent().build()
     }

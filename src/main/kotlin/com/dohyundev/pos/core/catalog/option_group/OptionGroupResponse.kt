@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 
 interface OptionGroupResponse {
     data class Detail(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
         val isRequired: Boolean,
         val selectableOptionCount: Int,
@@ -20,10 +20,10 @@ interface OptionGroupResponse {
             fun from(optionGroup: OptionGroup): Detail {
                 return Detail(
                     id = optionGroup.id!!,
-                    name = optionGroup.name,
+                    title = optionGroup.title,
                     description = optionGroup.description,
                     isRequired = optionGroup.isRequired,
-                    selectableOptionCount = optionGroup.selectableOptionCount,
+                    selectableOptionCount = optionGroup.maxChoiceCount,
                     displayOrder = optionGroup.displayOrder,
                     isActive = optionGroup.isActive,
                     options = optionGroup.options
@@ -37,8 +37,8 @@ interface OptionGroupResponse {
     }
 
     data class Summary(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
         val isRequired: Boolean,
         val selectableOptionCount: Int,
@@ -50,10 +50,10 @@ interface OptionGroupResponse {
             fun from(optionGroup: OptionGroup): Summary {
                 return Summary(
                     id = optionGroup.id!!,
-                    name = optionGroup.name,
+                    title = optionGroup.title,
                     description = optionGroup.description,
                     isRequired = optionGroup.isRequired,
-                    selectableOptionCount = optionGroup.selectableOptionCount,
+                    selectableOptionCount = optionGroup.maxChoiceCount,
                     displayOrder = optionGroup.displayOrder,
                     isActive = optionGroup.isActive,
                     optionCount = optionGroup.options.size
@@ -63,8 +63,8 @@ interface OptionGroupResponse {
     }
     
     data class OptionDetail(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
         val extraPrice: BigDecimal,
         val displayOrder: Long
@@ -73,7 +73,7 @@ interface OptionGroupResponse {
             fun from(option: Option): OptionDetail {
                 return OptionDetail(
                     id = option.id!!,
-                    name = option.name,
+                    title = option.title,
                     description = option.description,
                     extraPrice = option.extraPrice,
                     displayOrder = option.displayOrder

@@ -5,13 +5,15 @@ import com.dohyundev.common.entity.DisplayOrderable
 import com.dohyundev.common.entity.TsidBaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.PrePersist
 import jakarta.persistence.PreRemove
+import jakarta.persistence.PreUpdate
 import jakarta.persistence.Version
 
 @Entity
 class Category(
     @Column(nullable = false)
-    var name: String,
+    var title: String,
 
     var description: String? = null,
 
@@ -24,18 +26,29 @@ class Category(
     @Version
     private var version: Long? = null
 
+    @PrePersist
+    fun prePersist() {
+        this.andEvent(CreateCategoryEvent(this))
+    }
+
+    @PreUpdate
+    fun preUpdate() {
+        this.andEvent(UpdateCategoryEvent(this))
+    }
+
+
     @PreRemove
     fun preRemove() {
         this.andEvent(RemoveCategoryEvent(this))
     }
 
     fun update(
-        name: String = this.name,
+        title: String = this.title,
         description: String? = this.description,
         displayOrder: Long = this.displayOrder,
         isActive: Boolean = this.isActive
     ) {
-        this.name = name
+        this.title = title
         this.description = description
         changeDisplayOrder(displayOrder)
         this.isActive = isActive

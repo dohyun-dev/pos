@@ -6,10 +6,10 @@ import java.time.LocalDateTime
 
 interface ProductResponse {
     data class Detail(
-        val id: String,
-        val categoryId: String,
+        val id: Long,
+        val categoryId: Long,
         val categoryName: String,
-        val name: String,
+        val title: String,
         val description: String?,
         val barcode: String?,
         val basePrice: BigDecimal,
@@ -23,8 +23,8 @@ interface ProductResponse {
                 return Detail(
                     id = product.id!!,
                     categoryId = product.category.id!!,
-                    categoryName = product.category.name,
-                    name = product.name,
+                    categoryName = product.category.title,
+                    title = product.title,
                     description = product.description,
                     barcode = product.barcode,
                     basePrice = product.basePrice,
@@ -32,7 +32,7 @@ interface ProductResponse {
                     optionGroups = product.optionGroups.map { 
                         OptionGroupSummary(
                             id = it.optionGroup.id!!,
-                            name = it.optionGroup.name
+                            title = it.optionGroup.title
                         )
                     },
                     createdAt = product.createdAt,
@@ -43,10 +43,10 @@ interface ProductResponse {
     }
 
     data class Summary(
-        val id: String,
-        val categoryId: String,
+        val id: Long,
+        val categoryId: Long,
         val categoryName: String,
-        val name: String,
+        val title: String,
         val description: String?,
         val barcode: String?,
         val basePrice: BigDecimal,
@@ -57,8 +57,8 @@ interface ProductResponse {
                 return Summary(
                     id = product.id!!,
                     categoryId = product.category.id!!,
-                    categoryName = product.category.name,
-                    name = product.name,
+                    categoryName = product.category.title,
+                    title = product.title,
                     description = product.description,
                     barcode = product.barcode,
                     basePrice = product.basePrice,
@@ -69,7 +69,7 @@ interface ProductResponse {
     }
     
     data class OptionGroupSummary(
-        val id: String,
-        val name: String
+        val id: Long,
+        val title: String
     )
 }

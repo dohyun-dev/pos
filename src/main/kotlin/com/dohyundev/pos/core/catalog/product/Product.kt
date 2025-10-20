@@ -1,56 +1,45 @@
 package com.dohyundev.pos.core.catalog.product
 
+import com.dohyundev.common.entity.Activatable
 import com.dohyundev.common.entity.TsidBaseEntity
 import com.dohyundev.common.enum.TaxType
 import com.dohyundev.pos.core.catalog.category.Category
 import com.dohyundev.pos.core.catalog.option_group.OptionGroup
 import jakarta.persistence.*
-import java.math.BigDecimal
 
 @Entity
 class Product(
+    @Column(nullable = false)
+    var title: String,
+
+    @Column(length = 500)
+    var description: String? = null,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     var category: Category,
 
-    /** 제품명 */
-    @Column(nullable = false)
-    var name: String,
-
-    /** 설명 */
-    @Column(length = 500)
-    var description: String? = null,
-
-    /** 바코드  (UPC, EAN 등)*/
-    @Column(length = 50)
-    var barcode: String? = null,
-
-    @Column(precision = 15, scale = 2)
-    var basePrice: BigDecimal = BigDecimal.ZERO,
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var prices: MutableList<ProductPrice> = mutableListOf(),
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
     var optionGroups: MutableList<ProductOptionGroup> = mutableListOf(),
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    var taxType: TaxType = TaxType.TAX,
-) : TsidBaseEntity() {
+    override var isActive: Boolean = true
+) : TsidBaseEntity(), Activatable {
 
     fun update(
         category: Category = this.category,
-        name: String = this.name,
+        title: String = this.title,
         description: String? = this.description,
-        barcode: String? = this.barcode,
-        basePrice: BigDecimal = this.basePrice,
-        taxType: TaxType = this.taxType,
+        prices: MutableList<ProductPrice>  = this.prices,
         optionGroups: Collection<OptionGroup> = this.optionGroups.map { it -> it.optionGroup },
+        isActive: Boolean = this.isActive
     ) {
         this.category = category
-        this.name = name
+        this.title = title
         this.description = description
-        this.barcode = barcode
-        this.basePrice = basePrice
-        this.taxType = taxType
+        this.prices = prices
     }
 
     fun changeOptionGroups(optionGroups: Collection<ProductOptionGroup>) {

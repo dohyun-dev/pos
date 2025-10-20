@@ -16,7 +16,7 @@ class CategoryQueryServiceV1(
             .map { CategoryResponse.Summary.from(it) }
     }
 
-    fun getCategory(categoryId: String): CategoryResponse.Detail {
+    fun getCategory(categoryId: Long): CategoryResponse.Detail {
         val category = categoryRepository.findByIdOrNull(categoryId)
             ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: $categoryId")
         

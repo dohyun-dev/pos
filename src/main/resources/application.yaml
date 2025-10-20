@@ -1,5 +1,5 @@
 spring:
-  application.name: pos
+  application.title: pos
   jpa:
     open-in-view: false
     hibernate:

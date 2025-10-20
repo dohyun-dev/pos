@@ -4,10 +4,10 @@ import java.time.LocalDateTime
 
 interface CategoryResponse {
     data class Detail(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
-        val displayOrder: Int,
+        val displayOrder: Long,
         val isActive: Boolean,
         val createdAt: LocalDateTime?,
         val modifiedAt: LocalDateTime?
@@ -16,7 +16,7 @@ interface CategoryResponse {
             fun from(category: Category): Detail {
                 return Detail(
                     id = category.id!!,
-                    name = category.name,
+                    title = category.title,
                     description = category.description,
                     displayOrder = category.displayOrder,
                     isActive = category.isActive,
@@ -28,8 +28,8 @@ interface CategoryResponse {
     }
 
     data class Summary(
-        val id: String,
-        val name: String,
+        val id: Long,
+        val title: String,
         val description: String?,
         val displayOrder: Long,
         val isActive: Boolean
@@ -38,7 +38,7 @@ interface CategoryResponse {
             fun from(category: Category): Summary {
                 return Summary(
                     id = category.id!!,
-                    name = category.name,
+                    title = category.title,
                     description = category.description,
                     displayOrder = category.displayOrder,
                     isActive = category.isActive
