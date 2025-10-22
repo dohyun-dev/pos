@@ -4,6 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
 interface CategoryRepository : JpaRepository<Category, Long> {
+
+    fun existsByTitle(title: String): Boolean
+
     @Query("select coalesce(max(c.displayOrder), 0)  from Category c")
     fun findMaxDisplayOrder(): Long
     

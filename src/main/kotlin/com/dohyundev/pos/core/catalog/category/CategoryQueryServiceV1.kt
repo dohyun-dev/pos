@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 class CategoryQueryServiceV1(
     private val categoryRepository: CategoryRepository
 ) {
-    fun getCategories(): List<CategoryResponse.Summary> {
+    fun getCategories(): List<CategoryDto> {
         return categoryRepository.findAll()
             .sortedBy { it.displayOrder }
-            .map { CategoryResponse.Summary.from(it) }
+            .map { CategoryDto.from(it) }
     }
 
     fun getCategory(categoryId: Long): CategoryResponse.Detail {

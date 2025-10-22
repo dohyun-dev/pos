@@ -18,7 +18,9 @@ class Option(
     var description: String? = null,
 
     @Column(precision = 15, scale = 2)
-    var extraPrice: BigDecimal = BigDecimal.ZERO,
+    var priceValue: BigDecimal = BigDecimal.ZERO,
+
+    var imageUrl: String? = null,
 
     @Column(nullable = false)
     override var displayOrder: Long = 0,
@@ -27,11 +29,11 @@ class Option(
     fun update(
         title: String = this.title,
         description: String? = this.description,
-        extraPrice: BigDecimal = this.extraPrice,
+        extraPrice: BigDecimal = this.priceValue,
         displayOrder: Long = this.displayOrder,
     ) {
         this.title = title
-        this.extraPrice = extraPrice
+        this.priceValue = extraPrice
         this.description = description
         this.displayOrder = displayOrder
     }

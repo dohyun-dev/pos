@@ -17,11 +17,11 @@ class OptionGroup(
 
     var description: String? = null,
 
+    @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var choices: MutableList<Option> = mutableListOf(),
+
     @Column(nullable = false)
     var isRequired: Boolean = false,
-
-    @OneToMany(mappedBy = "group", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var options: MutableList<Option> = mutableListOf(),
 
     @Column(nullable = false)
     var minChoiceCount: Int = 0,
@@ -44,7 +44,7 @@ class OptionGroup(
         title: String = this.title,
         description: String? = this.description,
         isRequired: Boolean = this.isRequired,
-        options: MutableList<Option> = this.options,
+        options: MutableList<Option> = this.choices,
         minChoiceCount: Int = this.minChoiceCount,
         maxChoiceCount: Int = this.maxChoiceCount,
         defaultSelectedIds: List<Long> = this.defaultSelectedIds,
@@ -54,7 +54,7 @@ class OptionGroup(
         this.title = title
         this.description = description
         this.isRequired = isRequired
-        this.options = options
+        this.choices = options
         this.minChoiceCount = minChoiceCount
         this.maxChoiceCount = maxChoiceCount
         this.displayOrder = displayOrder
@@ -63,7 +63,7 @@ class OptionGroup(
     }
 
     fun changeOptions(options: Collection<Option>) {
-        this.options.clear()
-        this.options.addAll(options)
+        this.choices.clear()
+        this.choices.addAll(options)
     }
 }

@@ -3,12 +3,7 @@ package com.dohyundev.pos.core.catalog.category
 import com.dohyundev.common.entity.Activatable
 import com.dohyundev.common.entity.DisplayOrderable
 import com.dohyundev.common.entity.TsidBaseEntity
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreRemove
-import jakarta.persistence.PreUpdate
-import jakarta.persistence.Version
+import jakarta.persistence.*
 
 @Entity
 class Category(
@@ -35,7 +30,6 @@ class Category(
     fun preUpdate() {
         this.andEvent(UpdateCategoryEvent(this))
     }
-
 
     @PreRemove
     fun preRemove() {

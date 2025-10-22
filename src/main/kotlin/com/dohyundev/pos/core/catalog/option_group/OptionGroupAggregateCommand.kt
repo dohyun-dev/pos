@@ -52,7 +52,7 @@ interface OptionGroupAggregateCommand {
             optionGroup: OptionGroup,
             optionRepository: OptionRepository
         ) {
-            val existingOptions = optionGroup.options.associateBy { it.id }
+            val existingOptions = optionGroup.choices.associateBy { it.id }
             val updatedOptions = mutableListOf<Option>()
             val idMapping = mutableMapOf<Long, Long>()
 
@@ -63,7 +63,7 @@ interface OptionGroupAggregateCommand {
                     existing.apply {
                         title = optCmd.title!!
                         description = optCmd.description
-                        extraPrice = optCmd.extraPrice ?: BigDecimal.ZERO
+                        priceValue = optCmd.extraPrice ?: BigDecimal.ZERO
                         displayOrder = index.toLong()
                     }
                 } else {
@@ -108,7 +108,7 @@ interface OptionGroupAggregateCommand {
                 group = group,
                 title = title!!,
                 description = description,
-                extraPrice = extraPrice ?: BigDecimal.ZERO,
+                priceValue = extraPrice ?: BigDecimal.ZERO,
                 displayOrder = order
             )
         }

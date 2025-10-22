@@ -5,7 +5,7 @@ import java.time.LocalTime
 
 @Embeddable
 data class TimeRange(
-    val startTime: LocalTime? = null,
-    val endTime: LocalTime? = null,
+    val start: LocalTime? = null,
+    val end: LocalTime? = null,
 ) {
 }

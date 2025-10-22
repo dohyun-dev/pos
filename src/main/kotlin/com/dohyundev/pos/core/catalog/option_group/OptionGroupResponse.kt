@@ -26,7 +26,7 @@ interface OptionGroupResponse {
                     selectableOptionCount = optionGroup.maxChoiceCount,
                     displayOrder = optionGroup.displayOrder,
                     isActive = optionGroup.isActive,
-                    options = optionGroup.options
+                    options = optionGroup.choices
                         .sortedBy { it.displayOrder }
                         .map { OptionDetail.from(it) },
                     createdAt = optionGroup.createdAt,
@@ -56,7 +56,7 @@ interface OptionGroupResponse {
                     selectableOptionCount = optionGroup.maxChoiceCount,
                     displayOrder = optionGroup.displayOrder,
                     isActive = optionGroup.isActive,
-                    optionCount = optionGroup.options.size
+                    optionCount = optionGroup.choices.size
                 )
             }
         }
@@ -75,7 +75,7 @@ interface OptionGroupResponse {
                     id = option.id!!,
                     title = option.title,
                     description = option.description,
-                    extraPrice = option.extraPrice,
+                    extraPrice = option.priceValue,
                     displayOrder = option.displayOrder
                 )
             }
