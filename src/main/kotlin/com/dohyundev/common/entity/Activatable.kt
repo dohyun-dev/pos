@@ -1,17 +1,17 @@
 package com.dohyundev.common.entity
 
 interface Activatable {
-    var isActive: Boolean
+    var active: Boolean
 
     fun activate() {
-        this.isActive = true
+        this.active = true
     }
 
     fun deactivate() {
-        this.isActive = false
+        this.active = false
     }
 
     fun toggleActive() {
-        this.isActive = !this.isActive
+        this.active = !this.active
     }
 }

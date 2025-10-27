@@ -17,7 +17,7 @@ class Category(
     override var displayOrder: Int = 0,
 
     @Column(nullable = false)
-    override var isActive: Boolean = true
+    override var active: Boolean = true
 ) : BaseEntity(), DisplayOrderable, Activatable{
     @Version
     private var version: Long? = null
@@ -40,10 +40,10 @@ class Category(
     fun update(
         name: String = this.name,
         displayOrder: Int = this.displayOrder,
-        isActive: Boolean = this.isActive
+        isActive: Boolean = this.active
     ) {
         this.name = name
         changeDisplayOrder(displayOrder)
-        this.isActive = isActive
+        this.active = isActive
     }
 }

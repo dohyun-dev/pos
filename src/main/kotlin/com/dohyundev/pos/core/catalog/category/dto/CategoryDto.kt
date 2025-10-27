@@ -23,7 +23,7 @@ data class CategoryDto(
                 id = category.id!!.toString(),
                 name = category.name,
                 displayOrder = category.displayOrder,
-                isActive = category.isActive,
+                isActive = category.active,
                 createdAt = category.createdAt,
                 modifiedAt = category.modifiedAt,
                 createdBy = category.createdBy,
