@@ -1,9 +1,9 @@
 package com.dohyundev.pos.core.catalog.category.command.application
 
 import com.dohyundev.pos.core.catalog.category.command.domain.Category
-import com.dohyundev.pos.core.catalog.category.dto.CategoryDto
 import com.dohyundev.pos.core.catalog.category.command.domain.CategoryRepository
-import jakarta.persistence.EntityNotFoundException
+import com.dohyundev.pos.core.catalog.category.command.exception.CategoryEntityNotFoundException
+import com.dohyundev.pos.core.catalog.category.dto.CategoryDto
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -43,7 +43,7 @@ class CategoryCommandServiceV1(
     @Transactional
     fun updateCategory(id: Long, command: CategoryCommand.UpdateCategory): CategoryDto {
         val category = categoryRepository.findByIdOrNull(id)
-            ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: ${id}")
+            ?: throw CategoryEntityNotFoundException()
 
         category.update(
             name = command.name!!,
@@ -57,7 +57,7 @@ class CategoryCommandServiceV1(
     @Transactional
     fun deleteCategory(categoryId: Long) {
         val category = categoryRepository.findByIdOrNull(categoryId)
-            ?: throw EntityNotFoundException("카테고리를 찾을 수 없습니다. ID: $categoryId")
+            ?: throw CategoryEntityNotFoundException()
         
         categoryRepository.delete(category)
     }

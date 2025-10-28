@@ -23,4 +23,19 @@ class OptionGroup(
 
     override var displayOrder: Int
 ): BaseEntity(), DisplayOrderable {
+    fun update(
+        name: String = this.name,
+        isRequired: Boolean = this.isRequired,
+        choices: List<Option> = this.choices,
+        minChoices: Int = this.minChoices,
+        maxChoices: Int = this.maxChoices,
+        displayOrder: Int
+    ) {
+        this.name = name
+        this.isRequired = isRequired
+        this.choices = choices
+        this.minChoices = minChoices
+        this.maxChoices = maxChoices
+        this.displayOrder = displayOrder
+    }
 }
