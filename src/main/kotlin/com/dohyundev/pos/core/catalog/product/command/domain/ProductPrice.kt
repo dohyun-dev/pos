@@ -24,4 +24,10 @@ class ProductPrice(
 
     @Column(nullable = false)
     var isDefault: Boolean = false,
-): BaseEntity()
+): BaseEntity() {
+    companion object {
+        fun default(product: Product): ProductPrice {
+            return ProductPrice(product)
+        }
+    }
+}

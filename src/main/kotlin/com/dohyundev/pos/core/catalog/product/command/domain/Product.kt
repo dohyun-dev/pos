@@ -3,6 +3,7 @@ package com.dohyundev.pos.core.catalog.product.command.domain
 import com.dohyundev.common.entity.Activatable
 import com.dohyundev.common.entity.BaseEntity
 import com.dohyundev.pos.core.catalog.category.command.domain.Category
+import com.dohyundev.pos.core.catalog.domain.entity.QProduct.product
 import jakarta.persistence.*
 
 @Entity
@@ -33,8 +34,7 @@ class Product(
     override var active: Boolean = true,
 ): BaseEntity(), Activatable {
     @OneToOne(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var price: ProductPrice? = null
-        private set
+    var price: ProductPrice = ProductPrice.default(this)
 
     fun update(
         name: String = this.name,
