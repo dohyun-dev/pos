@@ -5,19 +5,19 @@ import jakarta.persistence.*
 
 @Entity
 class ProductPrice(
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    val product: Product,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var type: ProductPriceType = ProductPriceType.FIXED,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    var product: Product,
 
     @Column(nullable = false)
     var price: Long = 0,
 
     @Column(nullable = false)
-    var unit: Int = 0,
+    var unit: Int = 1,
 
     @Enumerated(EnumType.STRING)
     var taxType: TaxType = TaxType.TAXABLE,

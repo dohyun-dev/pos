@@ -19,8 +19,14 @@ class Product(
     @OneToMany(mappedBy="product", cascade = [CascadeType.ALL], orphanRemoval = true)
     var optionGroups: MutableList<ProductOptionGroup> = mutableListOf(),
 
-    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var variants: MutableList<ProductVariant> = mutableListOf(),
+    @Column(length = 100)
+    var sku: String? = null,
+
+    @Column(length = 100)
+    var barcode: String? = null,
+
+    @OneToOne(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var price: ProductPrice,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
