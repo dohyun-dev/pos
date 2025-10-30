@@ -19,10 +19,6 @@ class ProductPrice(
     @Column(nullable = false)
     var unit: Int = 0,
 
-    var barcode: String? = null,
-
-    var sku: String? = null,
-
     @Enumerated(EnumType.STRING)
     var taxType: TaxType = TaxType.TAXABLE,
 

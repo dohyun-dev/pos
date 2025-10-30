@@ -16,11 +16,11 @@ class Product(
     @JoinColumn(name = "category_id", nullable = false)
     var category: Category,
 
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
-    var prices: MutableList<ProductPrice> = mutableListOf(),
-
     @OneToMany(mappedBy="product", cascade = [CascadeType.ALL], orphanRemoval = true)
     var optionGroups: MutableList<ProductOptionGroup> = mutableListOf(),
+
+    @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var variants: MutableList<ProductVariant> = mutableListOf(),
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

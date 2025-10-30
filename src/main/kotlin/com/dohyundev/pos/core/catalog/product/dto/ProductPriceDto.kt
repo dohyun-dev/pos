@@ -1,4 +1,4 @@
-package com.dohyundev.pos.core.catalog.product.command.dto
+package com.dohyundev.pos.core.catalog.product.dto
 
 import com.dohyundev.pos.core.catalog.product.command.domain.ProductPriceType
 import com.dohyundev.pos.core.catalog.product.command.domain.ProductState
