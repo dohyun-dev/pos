@@ -1,7 +1,9 @@
 package com.dohyundev.pos.core.catalog.product.command.application
 
 interface ProductCommand {
-    data class CreateProduct()
+    open class UpsertProduct()
 
-    data class UpdateProduct()
+    class BulkUpsertProduct(
+        val id: Long?,
+    )
 }

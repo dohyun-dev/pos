@@ -22,7 +22,7 @@ class ProductApiControllerV1(
 
     @PostMapping("/aggregate")
     fun createProductAggregate(
-        @Valid @RequestBody request: ProductCommand.CreateProduct
+        @Valid @RequestBody request: ProductCommand.UpsertProduct
     ): ResponseEntity<ProductDto> {
         val product = productCommandService.createProduct(request)
         return ResponseEntity.ok(product)
@@ -32,16 +32,16 @@ class ProductApiControllerV1(
     @PutMapping("/aggregate/{productId}")
     fun updateProductAggregate(
         @PathVariable productId: Long,
-        @Valid @RequestBody request: List<ProductCommand.UpdateProduct>
-    ): ResponseEntity<List<ProductDto>> {
-        val updatedProducts = productCommandService.updateProduct(request)
+        @Valid @RequestBody request: ProductCommand.UpsertProduct
+    ): ResponseEntity<ProductDto> {
+        val updatedProducts = productCommandService.updateProduct(productId, request)
         return ResponseEntity.ok(updatedProducts)
     }
 
 
     @PutMapping("/aggregate")
     fun updateProductAggregate(
-        @Valid @RequestBody request: List<ProductCommand.UpdateProduct>
+        @Valid @RequestBody request: List<ProductCommand.UpsertProduct>
     ): ResponseEntity<List<ProductDto>> {
         val updatedProducts = productCommandService.bulkUpdateProduct(request)
         return ResponseEntity.ok(updatedProducts)
@@ -51,7 +51,7 @@ class ProductApiControllerV1(
     fun deleteProductAggregate(
         @PathVariable productId: Long,
     ): ResponseEntity<ProductDto> {
-        val deletedProduct = productCommandService.deleteProduct(productId)
-        return ResponseEntity.ok(deletedProduct)
+        productCommandService.deleteProduct(productId)
+        return ResponseEntity.ok().build()
     }
 }
