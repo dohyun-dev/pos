@@ -39,9 +39,9 @@ class ProductApiControllerV1(
     }
 
 
-    @PutMapping("/aggregate")
+    @PutMapping("/aggregate/bulk")
     fun updateProductAggregate(
-        @Valid @RequestBody request: List<ProductCommand.UpsertProduct>
+        @Valid @RequestBody request: List<ProductCommand.BulkUpdateProduct>
     ): ResponseEntity<List<ProductDto>> {
         val updatedProducts = productCommandService.bulkUpdateProduct(request)
         return ResponseEntity.ok(updatedProducts)

@@ -25,15 +25,41 @@ class Product(
     @Column(length = 100)
     var barcode: String? = null,
 
-    @OneToOne(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var price: ProductPrice,
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var state: ProductState = ProductState.ON_SALE,
 
     @Column(nullable = false)
-    override var active: Boolean = true
+    override var active: Boolean = true,
 ): BaseEntity(), Activatable {
+    @OneToOne(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var price: ProductPrice? = null
+        private set
 
+    fun update(
+        name: String = this.name,
+        description: String? = this.description,
+        category: Category = this.category,
+        price: ProductPrice? = null,
+        optionGroups: List<ProductOptionGroup>? = null,
+        sku: String? = this.sku,
+        barcode: String? = this.barcode,
+        state: ProductState = this.state,
+        active: Boolean = this.active,
+    ) {
+        this.name = name
+        this.description = description
+        this.category = category
+        price?.let { this.price = it }
+        optionGroups?.let { changeOptionGroups(it) }
+        this.sku = sku
+        this.barcode = barcode
+        this.state = state
+        this.active = active
+    }
+
+    fun changeOptionGroups(optionGroups: List<ProductOptionGroup>) {
+        this.optionGroups.clear()
+        this.optionGroups.addAll(optionGroups)
+    }
 }
