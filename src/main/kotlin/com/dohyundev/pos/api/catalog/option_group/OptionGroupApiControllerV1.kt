@@ -23,7 +23,7 @@ class OptionGroupApiControllerV1(
 
     @PostMapping
     fun createOptionGroup(
-        @Valid @RequestBody request: OptionGroupCommand.CreateOptionGroup
+        @Valid @RequestBody request: OptionGroupCommand.UpsertOptionGroup
     ): ResponseEntity<OptionGroupDto> {
         val created = optionGroupCommandService.createOptionGroup(request)
         return ResponseEntity.status(HttpStatus.CREATED).body(created)
@@ -32,7 +32,7 @@ class OptionGroupApiControllerV1(
     @PutMapping("/{optionGroupId}")
     fun updateOptionGroup(
         @PathVariable optionGroupId: Long,
-        @Valid @RequestBody request: OptionGroupCommand.UpdateOptionGroup
+        @Valid @RequestBody request: OptionGroupCommand.UpsertOptionGroup
     ): ResponseEntity<OptionGroupDto> {
         val updated = optionGroupCommandService.updateOptionGroup(optionGroupId, request)
         return ResponseEntity.ok(updated)

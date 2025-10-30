@@ -15,28 +15,34 @@ class OptionGroupCommandServiceV1(
 ) {
 
     @Transactional
-    fun createOptionGroup(command: OptionGroupCommand.CreateOptionGroup): OptionGroupDto {
+    fun createOptionGroup(command: OptionGroupCommand.UpsertOptionGroup): OptionGroupDto {
         val newOptionGroup = OptionGroup(
             name = command.name!!,
             isRequired = command.isRequired!!,
-            choices = command.choices!!.map { 
-                Option(
-                    name = it.name!!,
-                    price = it.price!!,
-                    isDefault = it.isDefault,
-                    state = it.state!!,
-                    displayOrder = it.displayOrder!!
-                ) 
-            },
             minChoices = command.minChoices!!,
             maxChoices = command.maxChoices!!,
             displayOrder = command.displayOrder!!
         )
+
+        val choices = command.choices!!.map {
+            Option(
+                name = it.name!!,
+                price = it.price!!,
+                optionGroup = newOptionGroup,
+                isDefault = it.isDefault!!,
+                state = it.state!!,
+                displayOrder = it.displayOrder!!
+            )
+        }
+
+        newOptionGroup.changeChoices(choices)
+
+
         return OptionGroupDto.from(optionGroupRepository.save(newOptionGroup))
     }
 
     @Transactional
-    fun updateOptionGroup(optionGroupId: Long, command: OptionGroupCommand.UpdateOptionGroup): OptionGroupDto {
+    fun updateOptionGroup(optionGroupId: Long, command: OptionGroupCommand.UpsertOptionGroup): OptionGroupDto {
         val optionGroup = (optionGroupRepository.findByIdOrNull(optionGroupId)
             ?: throw OptionGroupEntityNotFoundException())
 
@@ -45,9 +51,10 @@ class OptionGroupCommandServiceV1(
             isRequired = command.isRequired!!,
             choices = command.choices!!.map { 
                 Option(
+                    optionGroup = optionGroup,
                     name = it.name!!,
                     price = it.price!!,
-                    isDefault = it.isDefault,
+                    isDefault = it.isDefault!!,
                     state = it.state!!,
                     displayOrder = it.displayOrder!!
                 )
@@ -71,9 +78,10 @@ class OptionGroupCommandServiceV1(
                 isRequired = it.isRequired!!,
                 choices = it.choices!!.map { choice ->
                     Option(
+                        optionGroup = optionGroup,
                         name = choice.name!!,
                         price = choice.price!!,
-                        isDefault = choice.isDefault,
+                        isDefault = choice.isDefault!!,
                         state = choice.state!!,
                         displayOrder = choice.displayOrder!!
                     )

@@ -2,11 +2,7 @@ package com.dohyundev.pos.core.catalog.option_group.command.domain
 
 import com.dohyundev.common.entity.BaseEntity
 import com.dohyundev.common.entity.DisplayOrderable
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.type.SqlTypes
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "option_groups")
@@ -17,9 +13,8 @@ class OptionGroup(
     @Column(nullable = false)
     var isRequired: Boolean = false,
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
-    var choices: List<Option> = emptyList(),
+    @OneToMany(mappedBy = "optionGroup", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var choices: MutableList<Option> = mutableListOf(),
 
     @Column(nullable = false)
     var minChoices: Int = 0,
@@ -40,9 +35,14 @@ class OptionGroup(
     ) {
         this.name = name
         this.isRequired = isRequired
-        this.choices = choices
+        changeChoices(choices)
         this.minChoices = minChoices
         this.maxChoices = maxChoices
         this.displayOrder = displayOrder
+    }
+
+    fun changeChoices(choices: Collection<Option>) {
+        this.choices.clear()
+        this.choices.addAll(choices)
     }
 }
