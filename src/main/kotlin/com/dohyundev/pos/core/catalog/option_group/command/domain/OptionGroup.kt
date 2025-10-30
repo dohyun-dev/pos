@@ -9,18 +9,23 @@ import org.hibernate.type.SqlTypes
 
 @Entity
 class OptionGroup(
+    @Column(nullable = false)
     var name: String,
 
+    @Column(nullable = false)
     var isRequired: Boolean = false,
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     var choices: List<Option> = emptyList(),
 
+    @Column(nullable = false)
     var minChoices: Int = 0,
 
+    @Column(nullable = false)
     var maxChoices: Int = 1,
 
+    @Column(nullable = false)
     override var displayOrder: Int
 ): BaseEntity(), DisplayOrderable {
     fun update(

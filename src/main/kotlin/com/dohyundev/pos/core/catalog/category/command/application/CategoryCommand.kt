@@ -20,7 +20,7 @@ sealed interface CategoryCommand {
         val categories: List<BulkUpdateItem>?
     )
 
-    data class UpdateCategory(
+    class UpdateCategory(
         @field:NotBlank(message = "카테고리명은 필수입니다.")
         @field:Size(max = 20, message = "20자 이내로 입력해주세요.")
         val name: String?,

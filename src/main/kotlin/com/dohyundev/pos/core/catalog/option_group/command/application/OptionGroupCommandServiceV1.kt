@@ -15,41 +15,45 @@ class OptionGroupCommandServiceV1(
 ) {
 
     @Transactional
-    fun createOptionGroup(command: OptionGroupDto): OptionGroupDto {
+    fun createOptionGroup(command: OptionGroupCommand.CreateOptionGroup): OptionGroupDto {
         val newOptionGroup = OptionGroup(
             name = command.name!!,
-            isRequired = command.isRequired,
-            choices = command.choices.map { Option(
-                name = it.name!!,
-                price = it.price!!,
-                isDefault = it.isDefault,
-                state = it.state,
-                displayOrder = it.displayOrder!!
-            ) },
-            minChoices = command.minChoices,
-            maxChoices = command.maxChoices,
+            isRequired = command.isRequired!!,
+            choices = command.choices!!.map { 
+                Option(
+                    name = it.name!!,
+                    price = it.price!!,
+                    isDefault = it.isDefault,
+                    state = it.state!!,
+                    displayOrder = it.displayOrder!!
+                ) 
+            },
+            minChoices = command.minChoices!!,
+            maxChoices = command.maxChoices!!,
             displayOrder = command.displayOrder!!
         )
         return OptionGroupDto.from(optionGroupRepository.save(newOptionGroup))
     }
 
     @Transactional
-    fun updateOptionGroup(optionGroupId: Long, command: OptionGroupDto): OptionGroupDto {
+    fun updateOptionGroup(optionGroupId: Long, command: OptionGroupCommand.UpdateOptionGroup): OptionGroupDto {
         val optionGroup = (optionGroupRepository.findByIdOrNull(optionGroupId)
             ?: throw OptionGroupEntityNotFoundException())
 
         optionGroup.update(
             name = command.name!!,
-            isRequired = command.isRequired,
-            choices = command.choices.map { Option(
-                name = it.name!!,
-                price = it.price!!,
-                isDefault = it.isDefault,
-                state = it.state,
-                displayOrder = it.displayOrder!!
-            )},
-            minChoices = command.minChoices,
-            maxChoices = command.maxChoices,
+            isRequired = command.isRequired!!,
+            choices = command.choices!!.map { 
+                Option(
+                    name = it.name!!,
+                    price = it.price!!,
+                    isDefault = it.isDefault,
+                    state = it.state!!,
+                    displayOrder = it.displayOrder!!
+                )
+            },
+            minChoices = command.minChoices!!,
+            maxChoices = command.maxChoices!!,
             displayOrder = command.displayOrder!!
         )
 
@@ -57,9 +61,29 @@ class OptionGroupCommandServiceV1(
     }
 
     @Transactional
-    fun bulkUpdateOptionGroups(commands: List<OptionGroupDto>): List<OptionGroupDto> {
-        return commands.map {
-            updateOptionGroup(it.id!!, it)
+    fun bulkUpdateOptionGroups(command: OptionGroupCommand.BulkUpdateOptionGroups): List<OptionGroupDto> {
+        return command.optionGroups!!.map {
+            val optionGroup = (optionGroupRepository.findByIdOrNull(it.id!!)
+                ?: throw OptionGroupEntityNotFoundException())
+
+            optionGroup.update(
+                name = it.name!!,
+                isRequired = it.isRequired!!,
+                choices = it.choices!!.map { choice ->
+                    Option(
+                        name = choice.name!!,
+                        price = choice.price!!,
+                        isDefault = choice.isDefault,
+                        state = choice.state!!,
+                        displayOrder = choice.displayOrder!!
+                    )
+                },
+                minChoices = it.minChoices!!,
+                maxChoices = it.maxChoices!!,
+                displayOrder = it.displayOrder!!
+            )
+
+            OptionGroupDto.from(optionGroup)
         }
     }
 

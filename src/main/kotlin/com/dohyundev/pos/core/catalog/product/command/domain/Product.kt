@@ -26,6 +26,7 @@ class Product(
     @Column(nullable = false)
     var state: ProductState = ProductState.ON_SALE,
 
+    @Column(nullable = false)
     override var active: Boolean = true
 ): BaseEntity(), Activatable {
 

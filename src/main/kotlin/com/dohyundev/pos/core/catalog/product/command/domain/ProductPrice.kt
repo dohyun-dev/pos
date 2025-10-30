@@ -19,7 +19,6 @@ class ProductPrice(
     @Column(nullable = false)
     var unit: Int = 0,
 
-    @Column
     var barcode: String? = null,
 
     var sku: String? = null,
