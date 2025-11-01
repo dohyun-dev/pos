@@ -22,11 +22,9 @@ class ProductCommandServiceV1(
 ) {
     @Transactional
     fun createProduct(command: ProductCommand.UpsertProduct): ProductDto {
-        // 1. Category 조회
         val category = categoryRepository.findByIdOrNull(command.categoryId!!)
             ?: throw CategoryEntityNotFoundException()
 
-        // 2. Product 생성
         val product = Product(
             name = command.name,
             description = command.description,
@@ -37,7 +35,6 @@ class ProductCommandServiceV1(
             active = command.active
         )
 
-        // 3. ProductPrice 생성 및 연결
         val productPrice = ProductPrice(
             product = product,
             type = command.price.type,
@@ -47,7 +44,6 @@ class ProductCommandServiceV1(
             isDefault = command.price.isDefault
         )
 
-        // 4. OptionGroup 조회 및 ProductOptionGroup 생성
         val productOptionGroups: List<ProductOptionGroup> = if (command.optionGroupIds.isNotEmpty()) {
             val optionGroups = optionGroupRepository.findAllById(command.optionGroupIds)
             if (optionGroups.size != command.optionGroupIds.size) {
@@ -58,16 +54,13 @@ class ProductCommandServiceV1(
             emptyList()
         }
 
-        // 5. Product 업데이트 (price와 optionGroups 설정)
         product.update(
             price = productPrice,
             optionGroups = productOptionGroups
         )
 
-        // 6. 저장 (cascade로 인해 productPrice와 optionGroups도 함께 저장됨)
         val savedProduct = productRepository.save(product)
 
-        // 7. DTO 변환 및 반환
         return ProductDto.from(savedProduct)
     }
 
